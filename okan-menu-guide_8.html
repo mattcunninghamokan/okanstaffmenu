@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#17120d">
+<title>Ọkàn · Staff Menu Guide</title>
+<style>
+  /* =============================================================
+     Ọkàn Bluffton — Staff Menu Guide  (Summer Menu, dinner)
+     Self-contained. No external requests. No browser storage.
+     Built from: Okan FOH Menu Guide, Summer Recipe Packet, Okan Menu (Canva).
+     To update: edit the MENU / WINE arrays in the <script> block below.
+     ============================================================= */
+  :root{
+    --bg:#17120d; --bg-2:#1f1811; --card:#241c14; --card-2:#2b2118; --line:#3a2d20;
+    --text:#f2e9dd; --muted:#b7a692; --faint:#8a7a67;
+    --gold:#d8a25a; --gold-soft:#e6c493;
+    --green:#7fb069; --amber:#e0a955; --red:#e0705f;
+    --green-bg:rgba(127,176,105,.14); --amber-bg:rgba(224,169,85,.14); --red-bg:rgba(224,112,95,.14);
+    --gold-bg:rgba(216,162,90,.16);
+    --radius:16px; font-size:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:80px;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+  header{position:sticky;top:0;z-index:30;background:rgba(23,18,13,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .brand{padding:14px 0 8px;text-align:center;position:relative;}
+  .gear{position:absolute;right:0;top:12px;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg-2);color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;}
+  .gear:active{background:var(--card-2);}
+  /* manager modal */
+  .modal{position:fixed;inset:0;z-index:60;display:none;}
+  .modal.show{display:block;}
+  .modal .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);}
+  .modal .sheet{position:absolute;left:0;right:0;bottom:0;max-height:86vh;background:var(--bg-2);border-top:1px solid var(--line);border-radius:18px 18px 0 0;display:flex;flex-direction:column;max-width:760px;margin:0 auto;}
+  .modal .mh{padding:16px 16px 10px;border-bottom:1px solid var(--line);}
+  .modal .mh h3{margin:0;font-size:1.05rem;color:var(--gold);letter-spacing:.02em;}
+  .modal .mh p{margin:4px 0 0;font-size:.8rem;color:var(--faint);}
+  .mgr-list{overflow-y:auto;padding:6px 10px;flex:1;}
+  .mgr-row{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid rgba(58,45,32,.5);cursor:pointer;}
+  .mgr-row input{width:22px;height:22px;accent-color:var(--gold);flex-shrink:0;}
+  .mgr-meta{display:flex;flex-direction:column;}
+  .mgr-name{font-size:.98rem;font-weight:600;}
+  .mgr-cat{font-size:.72rem;color:var(--faint);}
+  .modal .mf{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;}
+  .modal .mf .mcount{flex:1;font-size:.82rem;color:var(--muted);}
+  .btn{padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;}
+  .btn.primary{background:var(--gold-bg);border-color:var(--gold);color:var(--gold-soft);}
+  .btn.ghost{color:var(--muted);}
+  .seg{display:flex;gap:6px;margin-top:12px;}
+  .seg button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-weight:600;font-size:.86rem;cursor:pointer;}
+  .seg button.on{background:var(--gold-bg);border-color:var(--gold);color:var(--gold-soft);}
+  .seg button#seg86.on{background:var(--red-bg);border-color:var(--red);color:#f2c4bb;}
+  .mgr-row.m86 input{accent-color:var(--red);}
+  /* 86 / out of stock */
+  .board86{background:var(--red-bg);border:1px solid rgba(224,112,95,.45);border-radius:12px;padding:10px 14px;margin:12px 0 4px;font-size:.9rem;color:#f2c4bb;line-height:1.5;}
+  .board86 b{color:#fff;}
+  .card.eightysix{opacity:.62;border-color:rgba(224,112,95,.45);}
+  .card.eightysix .name{text-decoration:line-through;text-decoration-color:rgba(224,112,95,.75);}
+  .tag.eightysix{background:var(--red-bg);color:#f2c4bb;border:1px solid rgba(224,112,95,.5);}
+  .brand h1{margin:0;font-size:1.55rem;font-weight:600;letter-spacing:.14em;color:var(--gold);}
+  .brand p{margin:2px 0 0;font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);}
+  .searchrow{display:flex;gap:8px;padding:0 0 10px;}
+  .search{flex:1;position:relative;display:flex;align-items:center;}
+  .search svg{position:absolute;left:12px;width:18px;height:18px;fill:var(--faint);}
+  .search input{width:100%;padding:12px 14px 12px 38px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:1rem;outline:none;}
+  .search input::placeholder{color:var(--faint);}
+  .search input:focus{border-color:var(--gold);}
+  .clearbtn{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;color:var(--muted);padding:0 14px;font-size:.85rem;cursor:pointer;white-space:nowrap;}
+  .clearbtn:active{background:var(--card-2);}
+
+  .quick{display:flex;gap:8px;padding:0 0 12px;flex-wrap:wrap;}
+  .qchip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:.85rem;cursor:pointer;user-select:none;transition:all .12s;}
+  .qchip:active{transform:scale(.96);}
+  .qchip.push.on{background:var(--gold-bg);border-color:var(--gold);color:var(--gold-soft);}
+  .qchip.diet.on{background:var(--green-bg);border-color:var(--green);color:#fff;}
+  .qchip.cmp.on{background:rgba(120,160,200,.16);border-color:#7aa0c8;color:#c7dbef;}
+  .points li.cmp{color:#cddff0;}
+  .points li.cmp::before{background:#7aa0c8;}
+  .points li.cmp b{color:#9ec0e2;}
+
+  .tool{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);margin:14px 0;overflow:hidden;}
+  .tool-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;}
+  .tool-head .t-title{display:flex;align-items:center;gap:9px;font-weight:600;font-size:.98rem;}
+  .tool-head .t-title .dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px var(--red-bg);}
+  .tool-head .chev{transition:transform .2s;fill:var(--muted);width:18px;height:18px;}
+  .tool.open .chev{transform:rotate(180deg);}
+  .tool-body{padding:0 14px 14px;display:none;}
+  .tool.open .tool-body{display:block;}
+  .tool-note{font-size:.82rem;color:var(--muted);margin:0 0 10px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .12s;user-select:none;}
+  .chip:active{transform:scale(.96);}
+  .chip.on{background:var(--red-bg);border-color:var(--red);color:#fff;}
+  .chip.diet.on{background:var(--green-bg);border-color:var(--green);color:#fff;}
+  .subhead{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:14px 0 8px;}
+  .toolopts{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.85rem;color:var(--muted);}
+  .toolopts input{width:18px;height:18px;accent-color:var(--gold);}
+
+  .activebar{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 4px;font-size:.85rem;color:var(--muted);}
+  .activebar.show{display:flex;}
+  .activebar .pill{background:var(--red-bg);border:1px solid var(--red);color:#fff;border-radius:999px;padding:3px 10px;font-size:.8rem;}
+  .activebar .pill.diet{background:var(--green-bg);border-color:var(--green);}
+  .activebar .pill.push{background:var(--gold-bg);border-color:var(--gold);color:var(--gold-soft);}
+  .resetlink{color:var(--gold);cursor:pointer;text-decoration:underline;font-size:.82rem;}
+
+  .cat{margin:22px 0 8px;}
+  .cat h2{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0;padding-bottom:8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;}
+  .cat h2 .cnote{font-size:.62rem;letter-spacing:.04em;color:var(--faint);text-transform:none;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin:12px 0;overflow:hidden;transition:border-color .15s;}
+  .card.feat{border-color:rgba(216,162,90,.5);box-shadow:0 0 0 1px rgba(216,162,90,.25);}
+  .card-head{padding:14px 15px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;}
+  .card-head .main{flex:1;min-width:0;}
+  .card .nameline{display:flex;align-items:baseline;gap:8px;}
+  .card .name{font-size:1.06rem;font-weight:600;margin:0;flex:1;}
+  .card .price{font-size:.92rem;color:var(--gold-soft);font-weight:600;white-space:nowrap;}
+  .card .desc{margin:5px 0 0;font-size:.9rem;color:var(--muted);}
+  .card .chev{width:18px;height:18px;fill:var(--faint);flex-shrink:0;margin-top:4px;transition:transform .2s;}
+  .card.open .chev{transform:rotate(180deg);}
+
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center;}
+  .tag{font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;font-weight:600;}
+  .tag.diet{background:var(--green-bg);color:var(--green);}
+  .tag.push{background:var(--gold-bg);color:var(--gold-soft);border:1px solid rgba(216,162,90,.4);}
+
+  .status{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.03em;white-space:nowrap;}
+  .status.safe{background:var(--green-bg);color:var(--green);}
+  .status.mod{background:var(--amber-bg);color:var(--amber);}
+  .status.no{background:var(--red-bg);color:var(--red);}
+
+  .card-body{display:none;padding:0 15px 16px;border-top:1px solid var(--line);}
+  .card.open .card-body{display:block;}
+  .sect{margin-top:14px;}
+  .sect .lbl{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;}
+  .points{margin:0;padding-left:0;list-style:none;}
+  .points li{position:relative;padding-left:18px;margin:5px 0;font-size:.92rem;color:var(--text);}
+  .points li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+
+  .allergrid{display:flex;flex-wrap:wrap;gap:7px;}
+  .al{font-size:.8rem;padding:5px 10px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;gap:6px;}
+  .al.contains{background:var(--red-bg);border-color:rgba(224,112,95,.4);color:#f2c4bb;}
+  .al.removable{background:var(--amber-bg);border-color:rgba(224,169,85,.4);color:#f0d6a6;}
+  .al .mk{font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;opacity:.85;}
+  .al.none{background:var(--green-bg);border-color:rgba(127,176,105,.4);color:#cfe4c2;}
+  .verify{font-size:.78rem;color:var(--amber);margin-top:8px;}
+
+  .pair{display:flex;gap:10px;margin:8px 0;align-items:flex-start;}
+  .pair .ptype{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--card-2);border:1px solid var(--line);border-radius:6px;padding:4px 7px;flex-shrink:0;min-width:58px;text-align:center;}
+  .pair .pbody{font-size:.9rem;}
+  .pair .pname{font-weight:600;}
+  .pair .pnote{color:var(--muted);font-size:.85rem;}
+
+  .modnote{margin-top:12px;background:var(--amber-bg);border:1px solid rgba(224,169,85,.35);border-radius:10px;padding:9px 12px;font-size:.85rem;color:#f0d6a6;}
+
+  .pairswith{margin:6px 0 0;font-size:.88rem;color:var(--text);}
+  .pairswith .none{color:var(--faint);}
+
+  .empty{text-align:center;color:var(--faint);padding:50px 20px;font-size:.95rem;}
+  .count{font-size:.78rem;color:var(--faint);margin:10px 0 0;}
+  footer{color:var(--faint);font-size:.76rem;padding:26px 2px 10px;line-height:1.6;}
+  footer b{color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><h1>ỌKÀN</h1><p>Staff Menu Guide · Summer</p>
+      <button id="managerBtn" class="gear" title="Manager — set tonight's Push" aria-label="Manager">⚙</button>
+    </div>
+    <div class="searchrow">
+      <div class="search">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
+        <input id="q" type="search" placeholder="Search dishes, ingredients, wine…" autocomplete="off">
+      </div>
+      <button class="clearbtn" id="clearBtn">Clear</button>
+    </div>
+    <div class="quick">
+      <div class="qchip push" id="pushChip">★ Push tonight</div>
+      <div class="qchip diet" data-diet="Vegan" id="qVegan">Vegan</div>
+      <div class="qchip diet" data-diet="Gluten-Free" id="qGF">Gluten-Free</div>
+      <div class="qchip cmp" id="cmpChip">↺ Compare last menu</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tool" id="tool">
+    <div class="tool-head" id="toolHead">
+      <div class="t-title"><span class="dot"></span> Allergy &amp; dietary filter</div>
+      <svg class="chev" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+    </div>
+    <div class="tool-body">
+      <p class="tool-note">Tap what the guest needs to <b>avoid</b>. Dishes are marked <span style="color:var(--green)">Safe</span>, <span style="color:var(--amber)">Can modify</span>, or <span style="color:var(--red)">Contains</span>. <b>Always confirm severe allergies with the kitchen</b> — recipes and sourcing change.</p>
+      <div class="subhead">Avoid these allergens</div>
+      <div class="chips" id="allergenChips"></div>
+      <div class="subhead">Show only</div>
+      <div class="chips" id="dietChips"></div>
+      <label class="toolopts"><input type="checkbox" id="hideUnsafe"> Hide dishes that aren’t safe</label>
+    </div>
+  </div>
+
+  <div class="activebar" id="activeBar"></div>
+  <p class="count" id="count"></p>
+
+  <div id="menu"></div>
+  <div class="empty" id="empty" style="display:none;">No matches. Try clearing a filter.</div>
+
+  <footer id="foot"></footer>
+</div>
+
+<!-- Manager modal -->
+<div class="modal" id="mgrModal">
+  <div class="backdrop" id="mgrBackdrop"></div>
+  <div class="sheet">
+    <div class="mh">
+      <h3 id="mgrTitle">Set tonight’s “Push”</h3>
+      <p id="mgrSub">Tap the dishes to feature tonight. Saved on this device — the whole floor sees the same picks.</p>
+      <div class="seg">
+        <button id="segPush" class="on">★ Push tonight</button>
+        <button id="seg86">86 / Out</button>
+      </div>
+    </div>
+    <div class="mgr-list" id="mgrList"></div>
+    <div class="mf">
+      <span class="mcount" id="mgrCount"></span>
+      <button class="btn ghost" id="mgrClear">Clear all</button>
+      <button class="btn primary" id="mgrDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= ALLERGEN + DIETARY VOCAB ================= */
+const ALLERGENS = ["Gluten","Dairy","Egg","Peanut","Tree Nut","Sesame","Shellfish","Fish","Soy"];
+const DIETARY   = ["Vegetarian","Vegan","Gluten-Free","Dairy-Free","Pescatarian"];
+
+/* ================= MENU DATA =================
+   allergens.contains = allergens present · allergens.removable = subset kitchen can omit
+   pour = wine listed next to the dish on the FOH guide
+   featured:true = shows the "★ Push tonight" flag (placeholder picks — change freely)
+   verify = optional note flagging something to confirm with the kitchen
+   ============================================ */
+const MENU = [
+  /* ---------- GREETINGS ---------- */
+  { cat:"Greetings", name:"Crispy Shrooms", price:"15", desc:"Oyster & maitake mushrooms, herb salsa verde.",
+    points:["Vegan and gluten-free — a great safe opener for guests with restrictions.","Fried to order, piled high; light and crisp with a bright herb salsa verde.","Mild — a little jalapeño lift, no real heat."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Flora Lisa Pinot Grigio", featured:false },
+
+  { cat:"Greetings", name:"Berbere Octopus", price:"20", desc:"Tender octopus, berbere glaze, sweet corn succotash, crab, benne, charred lime.", featured:true,
+    points:["Signature small plate — octopus braised tender then charred hard on the plancha for smoke.","Contains shellfish (octopus + crab) and sesame (benne seed).","Crab is added at pickup and the benne is a finish — both can be left off; the octopus itself can't."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Shellfish","Sesame"],removable:["Sesame"]}, pour:"Rosé de Printemps" },
+
+  { cat:"Greetings", name:"Smoked Fish Dip", price:"17", desc:"Smoked fish of the day, plantain chips, cucumber.",
+    points:["Smoky, creamy, served chilled with crisp plantain chips.","Made with dairy-free mayo, so it's dairy-free — but confirm the egg question below for egg allergies.","Light Scotch-bonnet warmth."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Fish","Egg"],removable:[]}, pour:"House of Brown Chardonnay",
+    verify:"Egg: the dairy-free mayo is likely still egg-based — confirm with the kitchen whether it's vegan mayo." },
+
+  { cat:"Greetings", name:"Sweet Corn Fritters", price:"12", desc:"Berbere honey, lime crema.",
+    points:["Warm, fluffy corn fritters with a sweet-spiced berbere honey.","Batter contains egg and milk, and the lime crema is dairy — not a good pick for egg/dairy allergies.","Vegetarian."],
+    dietary:["Vegetarian","Gluten-Free"], spice:1,
+    allergens:{contains:["Egg","Dairy"],removable:[]}, pour:"Moscato Cuvée Adriana" },
+
+  { cat:"Greetings", name:"Black-Eyed Pea Hummus", price:"12", desc:"Mint, lime, green seasoning, crudités.",
+    points:["Our Lowcountry take on hummus — light, herby, vegan.","Contains sesame (tahini) — the tahini is core, so it can't be removed.","Served with crisp seasonal crudités."],
+    dietary:["Vegetarian","Vegan","Gluten-Free"], spice:1,
+    allergens:{contains:["Sesame"],removable:[]}, pour:"Raats Chenin Blanc" },
+
+  { cat:"Greetings", name:"Watermelon & Crab", price:"20", desc:"Watermelon, cucumber, blue crab, leche de tigre.",
+    points:["Cool, bright summer plate — sweet watermelon against blue crab.","The leche de tigre uses fish/clam stock, so it has both fish and shellfish and can't be made without.","No real heat."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Shellfish","Fish"],removable:[]}, pour:"Don Luchi Prosecco" },
+
+  { cat:"Greetings", name:"Crispy Oysters", price:"15", desc:"Berbere, pikliz, lemon.",
+    points:["Crunchy fried oysters over tangy pikliz slaw.","Shellfish, and the dredge uses egg — neither is removable.","Berbere gives warm spice, not heat."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Shellfish","Egg"],removable:[]}, pour:"Los Monteros Cava Brut" },
+
+  /* ---------- GREENS ---------- */
+  { cat:"Greens", name:"Kachumbari", price:"13", desc:"Tomato, red onion, cucumber, Scotch bonnet, cilantro, lime.",
+    points:["Fresh East African tomato-and-onion salad — vegan and free of the major allergens.","Great clean, safe option for allergy tables.","Scotch bonnet gives a gentle kick."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Big Salt Sauvignon Blanc" },
+
+  { cat:"Greens", name:"Maier Peach Salad", price:"13", desc:"Spinach, grilled peaches, country ham, watercress, cane vinegar, benne.",
+    points:["Summer peaches with salty country ham and peppery watercress.","Contains sesame (benne seed) — it's a finish and can be left off.","Drop the ham to make it vegetarian."],
+    dietary:["Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Lemelson White Pinot Noir" },
+
+  { cat:"Greens", name:"Callaloo Salad", price:"13", desc:"Young greens, callaloo, dried mango, toasted coconut, peanuts, limón vinaigrette.",
+    points:["Bright, tropical salad — vegan and refreshing.","Contains peanuts (and coconut) — peanuts are a garnish and can be left off for a peanut allergy.","Confirm the peanut note below."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:["Peanut"],removable:["Peanut"]}, pour:"Radley & Finch Sauvignon Blanc",
+    verify:"The FOH guide didn't mark this with the nut symbol, but the recipe lists roasted peanuts — treat as peanut-containing and confirm." },
+
+  /* ---------- BREAD SERVICE ---------- */
+  { cat:"Bread Service", name:"Coco Bread", price:"7", desc:"Salt, olive oil, seasonal jam.",
+    points:["Soft, slightly sweet coconut-milk bread — vegan and dairy-free.","Made with wheat flour, so it does contain gluten (not GF).","Comes with a seasonal jam."],
+    dietary:["Vegetarian","Vegan","Dairy-Free"], spice:0,
+    allergens:{contains:["Gluten"],removable:[]}, pour:"Blanc de Noir" },
+
+  { cat:"Bread Service", name:"GF Cornbread", price:"8", desc:"Whipped butter.",
+    points:["Gluten-free cornbread, warm, with whipped honey butter.","Contains egg and dairy (buttermilk + butter) — not for those allergies.","Made in a GF prep area."],
+    dietary:["Vegetarian","Gluten-Free"], spice:0,
+    allergens:{contains:["Egg","Dairy"],removable:[]}, pour:"Rosé de Printemps" },
+
+  { cat:"Bread Service", name:"Tostones", price:"6", desc:"Salt, green seasoning.",
+    points:["Twice-fried green plantains — vegan, gluten-free, allergen-friendly.","Fried in a dedicated GF fryer.","Served with herby green seasoning for dipping."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Flora Lisa Pinot Grigio" },
+
+  /* ---------- GOODS ---------- */
+  { cat:"Goods", name:"Charred Sweet Corn Ribs", price:"12", desc:"Coconut butter, berbere, lime, benne, cotija.",
+    points:["Corn cut into 'ribs,' charred and brushed with coconut butter.","Cotija (dairy) and benne (sesame) are both finishes — omit the cotija for a vegan plate.","Warm berbere spice."],
+    dietary:["Vegetarian","Gluten-Free"], spice:1,
+    allergens:{contains:["Dairy","Sesame"],removable:["Dairy","Sesame"]}, pour:"Raats Chenin Blanc" },
+
+  { cat:"Goods", name:"Island Callaloo", price:"11", desc:"Mojo, onion, garlic.",
+    points:["Braised island greens with a bright citrus mojo — vegan.","Free of the major allergens.","Simple, comforting side."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"Radley & Finch Sauvignon Blanc" },
+
+  { cat:"Goods", name:"Carrots in Dirt", price:"12", desc:"Honey, maple, butter, rye 'dirt' crumbs.",
+    points:["Glazed carrots over a cocoa-rye crumb 'dirt' — playful and sweet-savory.","The rye 'dirt' has gluten and the glaze has butter (dairy); the dirt can be left off for gluten.","Vegetarian."],
+    dietary:["Vegetarian"], spice:0,
+    allergens:{contains:["Gluten","Dairy"],removable:["Gluten"]}, pour:"Sean Minor Pinot Noir" },
+
+  { cat:"Goods", name:"Crispy Okra", price:"12", desc:"Palm-oil vinaigrette, benne, urfa, charred lemon.",
+    points:["Crisp-charred okra — no slime, all texture. Vegan.","Contains sesame (benne) as a finish, which can be left off.","Gentle Urfa-pepper warmth."],
+    dietary:["Vegetarian","Vegan","Gluten-Free"], spice:1,
+    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt Sauvignon Blanc" },
+
+  { cat:"Goods", name:"Jerk Macaroni & Cheese", price:"12", desc:"Smoked gouda, mozzarella, peppers, garlic.",
+    points:["GF pasta in a jerk-spiced smoked-gouda sauce — rich and a little spicy.","Very much a dairy dish (four dairy elements) — not for dairy allergies.","Jerk brings real warmth."],
+    dietary:["Vegetarian","Gluten-Free"], spice:2,
+    allergens:{contains:["Dairy"],removable:[]}, pour:"Big Flower Cabernet Sauvignon" },
+
+  /* ---------- RICE (sides) ---------- */
+  { cat:"Rice", name:"Djon Djon", price:"8", desc:"Haitian black-mushroom rice, onion, garlic.",
+    points:["Earthy black-mushroom rice — vegan, gluten-free.","Rice is the through-line of our menu: West Africa to the Lowcountry.","Safe, allergen-friendly side."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"" },
+
+  { cat:"Rice", name:"Carolina Gold", price:"8", desc:"Turmeric, parsley.",
+    points:["Heritage Carolina Gold rice, golden with turmeric — vegan, GF.","A Lowcountry heirloom grain with deep local history.","Clean, safe side."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"" },
+
+  { cat:"Rice", name:"Callaloo Rice", price:"8", desc:"Collard greens, garlic, callaloo, coconut milk.",
+    points:["Creamy coconut-braised greens and rice — vegan, GF.","Coconut is used (see coconut note in the footer).","Comforting, mild."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"" },
+
+  { cat:"Rice", name:"Jollof", price:"8", desc:"Bay leaf, red onion, tomato, garlic, parsley.",
+    points:["The classic West African tomato rice — smoky and savory, vegan and GF.","A crowd-pleaser and an easy recommend for restricted tables.","Mild."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"" },
+
+  /* ---------- OF THE HEARTH ---------- */
+  { cat:"Of the Hearth", name:"Pork Shank", price:"40", desc:"Malanga mash, roasted tomatillo sauce, pickled red onion, plantain.",
+    points:["Braised-then-crisped pork shank, fall-off-the-bone, over silky malanga mash.","The mash is made with cream and butter (dairy) — it's the base, so not removable.","Mild — a little poblano/jalapeño in the tomatillo sauce."],
+    dietary:["Gluten-Free"], spice:1,
+    allergens:{contains:["Dairy"],removable:[]}, pour:"Tentadora Malbec" },
+
+  { cat:"Of the Hearth", name:"Peach Pepper Chicken", price:"32", desc:"Callaloo rice, charred scallion, grilled peach.", featured:true,
+    points:["Crispy-skinned chicken with a sweet-hot peach-Scotch-bonnet glaze — a best-seller.","Gluten-free and dairy-free.","Nice hook for guests who want bold-but-approachable heat."],
+    dietary:["Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Sean Minor Pinot Noir" },
+
+  { cat:"Of the Hearth", name:"Curried Goat", price:"32", desc:"Coconut rice, plantain, butter beans, carrots, crispy shallots.",
+    points:["Slow-braised Caribbean curry goat — deeply spiced, tender.","Dairy-free. It's GF only if the shallots are done with rice flour — flag GF guests so the kitchen swaps.","Warm curry spice, gentle heat."],
+    dietary:["Dairy-Free"], spice:1,
+    allergens:{contains:["Gluten"],removable:["Gluten"]}, pour:"Valdehermoso Tempranillo",
+    verify:"Gluten: crispy shallots are floured — kitchen can do a rice-flour version for a GF guest." },
+
+  /* ---------- OF THE LAND ---------- */
+  { cat:"Of the Land", name:"Hanger Steak", price:"42", desc:"Sweet corn succotash, harissa, grilled bok choy.",
+    points:["Grilled hanger steak, sliced across the grain, with smoky harissa.","Gluten-free and dairy-free. Cooked to order — advise on undercooked-meat risk.","Confirm the seafood-symbol note below."],
+    dietary:["Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Markham Cabernet Sauvignon",
+    verify:"The FOH guide marks this with the shellfish/fish symbol, but no seafood is in the recipe — confirm with the kitchen (possible typo)." },
+
+  { cat:"Of the Land", name:"Jerk Oxtails", price:"38", desc:"Cabbage, Djon Djon rice, jerk BBQ, charred pineapple.", featured:true,
+    points:["Lacquered jerk-BBQ oxtails, braised until they fall apart — rich and a little sweet.","Gluten-free and dairy-free.","Real jerk heat; the charred pineapple cools it."],
+    dietary:["Gluten-Free","Dairy-Free"], spice:2,
+    allergens:{contains:[],removable:[]}, pour:"Brown Estate Zinfandel" },
+
+  /* ---------- OF THE SEA ---------- */
+  { cat:"Of the Sea", name:"Cashew Curry with Lobster", price:"36", desc:"Lobster, plantain, green beans, zucchini, eggplant.",
+    points:["Silky cashew-coconut curry with lobster — luxe and aromatic.","Contains tree nut (cashew) and shellfish (lobster) — both are the dish, not removable.","Gentle Scotch-bonnet warmth."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Tree Nut","Shellfish"],removable:[]}, pour:"House of Brown Chardonnay" },
+
+  { cat:"Of the Sea", name:"Escovitch Snapper", price:"45", desc:"Whole fried red snapper, bell pepper, onion, garlic, grilled lemon.",
+    points:["Whole crispy-fried snapper topped with tangy pickled escovitch vegetables — a showstopper.","Fish; fried in a dedicated GF fryer, gluten-free and dairy-free.","Scotch-bonnet in the escovitch, moderate zing."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Fish"],removable:[]}, pour:"Flora Lisa Pinot Grigio" },
+
+  { cat:"Of the Sea", name:"West African Gumbo", price:"39", desc:"Shrimp, crab, mussels, okra, tomato, green pepper, chayote.",
+    points:["Palm-oil gumbo loaded with shrimp, crab and mussels — deep and soulful.","Shellfish and fish (seafood stock) throughout — not modifiable.","Solid Scotch-bonnet heat."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:2,
+    allergens:{contains:["Shellfish","Fish"],removable:[]}, pour:"Rosé de Printemps" },
+
+  { cat:"Of the Sea", name:"Local Fish", price:"Market", desc:"Peanut sauce, Djon Djon rice.",
+    points:["Crisp-skinned local fish over a West African peanut sauce.","Contains fish and peanut — the peanut sauce is the dish, so neither is removable.","Market price — check the day's fish and cost.","Gentle heat."],
+    dietary:["Gluten-Free","Dairy-Free","Pescatarian"], spice:1,
+    allergens:{contains:["Fish","Peanut"],removable:[]}, pour:"Radley & Finch Sauvignon Blanc" },
+
+  /* ---------- OF THE EARTH ---------- */
+  { cat:"Of the Earth", name:"Djon Djon Noodles", price:"20", desc:"Black, trumpet & beech mushrooms, spinach, green onion.",
+    points:["GF rice noodles in a rich Haitian black-mushroom broth — vegan, umami-heavy.","Free of the major allergens.","Finished with a little Urfa oil for gentle warmth."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:1,
+    allergens:{contains:[],removable:[]}, pour:"Raats Chenin Blanc",
+    verify:"Soy: confirm the mushroom broth/seasoning is soy-free if a guest has a soy allergy." },
+
+  { cat:"Of the Earth", name:"Eggplant Yassa", price:"20", desc:"Onions, mustard, lemon, benne.",
+    points:["Senegalese-style eggplant in a tangy mustard-onion yassa — vegan.","Contains sesame (benne) as a finish, which can be left off.","Scotch-bonnet gives light heat."],
+    dietary:["Vegetarian","Vegan","Gluten-Free"], spice:1,
+    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt Sauvignon Blanc" },
+
+  { cat:"Of the Earth", name:"Gullah Okra & Tomatoes", price:"20", desc:"Stewed okra and tomatoes over rice with fresh herbs.",
+    points:["Classic Gullah stewed okra and tomatoes over Carolina Gold rice — vegan, GF.","Free of the major allergens — an easy, comforting recommend.","Mild."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:0,
+    allergens:{contains:[],removable:[]}, pour:"Flora Lisa Pinot Grigio" },
+
+  { cat:"Of the Earth", name:"Suya Spiced Cauliflower", price:"20", desc:"Peanut, herb salad.", featured:true,
+    points:["Whole-roasted cauliflower rubbed in suya spice with a peanut-herb salad — our standout vegan main.","Contains peanut (suya spice + peanuts) — the suya rub is peanut-based, so not removable.","Suya carries real warmth (cayenne)."],
+    dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:2,
+    allergens:{contains:["Peanut"],removable:[]}, pour:"House of Brown Chardonnay" },
+
+  /* ---------- COCKTAILS (drinks — no allergen filter) ---------- */
+  { cat:"Cocktails", drink:true, name:"Chef's Tea", price:"18", desc:"Diplomático Rum, hibiscus, banana, lemon, lime, simple.",
+    points:["House signature — rum with hibiscus and banana, tart and tropical."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Passion Fruit Mojito", price:"15", desc:"Havana Club Rum, mint, passion fruit, lime, simple, club soda.",
+    points:["Bright, refreshing, crushable — the easy summer pour."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Peach 'Tang Daiquiri", price:"15", desc:"Probitas Rum, peach, lime, simple.",
+    points:["Clean daiquiri riff with summer peach — tart and simple."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Wealth of the Motherland", price:"16", desc:"Vusa Vodka, St. Germain, cucumber, lime, simple.",
+    points:["Light, floral and cool — cucumber + elderflower. Great aperitif."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Lady May River", price:"16", desc:"Lunazul Tequila, pomegranate, sour apple, lemon, simple, blackberry-ginger purée.",
+    points:["Fruit-forward tequila sour with a berry-ginger backbone."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Jelimuso", price:"18", desc:"El Mayor Añejo Tequila, mango, hibiscus syrup, lime.",
+    points:["Añejo tequila, mango and hibiscus — rich and vibrant."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Cocktails", drink:true, name:"Oba Ife “King's Cup”", price:"18", desc:"Woodford Reserve or Bumbu, rosemary syrup, orange bitters, smoked.",
+    points:["Smoked-and-stirred whiskey drink — herbal, aromatic, our showpiece."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" }
+];
+
+/* ================= WINE BY THE GLASS ================= */
+const WINE = [
+  {name:"Sean Minor Pinot Noir", type:"Red", region:"Sonoma Coast, California", glass:"14", bottle:"49", note:"Light, red-fruited, food-friendly."},
+  {name:"Wormser Liebfrauenmorgen Dornfelder", type:"Red", region:"Germany", glass:"13", bottle:"42", note:"Soft, juicy, gently fruity German red."},
+  {name:"Big Flower Cabernet Sauvignon", type:"Red", region:"Stellenbosch, South Africa", glass:"15", bottle:"52", note:"Bold, dark-fruited Cab."},
+  {name:"Tentadora Malbec", type:"Red", region:"Cafayate, Argentina", glass:"15", bottle:"52", note:"Plush, dark plum and spice."},
+  {name:"Valdehermoso Joven Tempranillo", type:"Red", region:"Roa, Spain", glass:"16", bottle:"56", note:"Bright, juicy young Tempranillo."},
+  {name:"Brown Estate Zinfandel", type:"Red", region:"Napa Valley, California", glass:"", bottle:"72", note:"Jammy, brambly Zin. Bottle only."},
+  {name:"Markham Cabernet Sauvignon", type:"Red", region:"Napa Valley, California", glass:"", bottle:"89", note:"Structured Napa Cab. Bottle only."},
+  {name:"Brown Estate Chaos Theory Red Blend", type:"Red", region:"Napa Valley, California", glass:"", bottle:"58", note:"Layered red blend. Bottle only."},
+
+  {name:"Moscato Cuvée Adriana", type:"White", region:"Italy", glass:"12", bottle:"45", note:"Sweet, floral, low-alcohol."},
+  {name:"Rosé de Printemps", type:"White", region:"Provence, France", glass:"13", bottle:"48", note:"Dry, crisp Provençal rosé."},
+  {name:"Flora Lisa Pinot Grigio", type:"White", region:"Apennine Mtns, Central Italy", glass:"13", bottle:"48", note:"Light, crisp, easy."},
+  {name:"House of Brown Chardonnay", type:"White", region:"Lodi, California", glass:"14", bottle:"49", note:"Round, gently oaked Chardonnay."},
+  {name:"Radley & Finch Sauvignon Blanc", type:"White", region:"Western Cape, South Africa", glass:"14", bottle:"49", note:"Zesty, citrusy Sauvignon Blanc."},
+  {name:"Big Salt Sauvignon Blanc", type:"White", region:"Oregon", glass:"16", bottle:"58", note:"Saline, bright, coastal."},
+  {name:"Raats Chenin Blanc", type:"White", region:"Coastal Region, South Africa", glass:"15", bottle:"52", note:"Fresh, off-dry Chenin."},
+  {name:"Blanc de Noir", type:"White", region:"France", glass:"16", bottle:"58", note:"Delicate white made from red grapes."},
+  {name:"Lemelson White Pinot Noir", type:"White", region:"Willamette Valley, Oregon", glass:"", bottle:"65", note:"Unusual white-pressed Pinot Noir. Bottle only."},
+
+  {name:"Don Luchi Prosecco", type:"Bubbles", region:"Italy", glass:"13", bottle:"48", note:"Easy, lightly sweet Prosecco."},
+  {name:"Los Monteros Cava Brut", type:"Bubbles", region:"Spain", glass:"14", bottle:"49", note:"Dry, crisp Cava."},
+  {name:"Fritz Müller (N/A)", type:"Bubbles", region:"Appenheim, Germany", glass:"13", bottle:"48", note:"Non-alcoholic white sparkling."},
+  {name:"La Cuvée Laurent-Perrier Brut", type:"Bubbles", region:"France", glass:"", bottle:"79", note:"Champagne. Bottle only."}
+];
+
+/* ================= PREVIOUS MENU (Winter 2026) COMPARISON =================
+   Shown inside talking points when "Compare last menu" is on.
+   Source: Winter 2026 Training Cards. Edit freely. */
+const PREV={
+  "Crispy Shrooms":"Carried over, essentially unchanged — mixed mushrooms, salsa verde.",
+  "Berbere Octopus":"Same octopus, new plate: Winter served it on squash purée with palm oil and pomegranate; Summer moves to sweet corn succotash with crab and charred lime.",
+  "Smoked Fish Dip":"Winter plated it with a benne cracker and pickled onion; Summer serves it as a dip with plantain chips and cucumber.",
+  "Sweet Corn Fritters":"Takes the fried-starter slot from Winter's Jackfruit Fritters — corn instead of jackfruit, berbere honey instead of berbere aioli.",
+  "Black-Eyed Pea Hummus":"Reworked from Winter's Red Lentil Hummus — black-eyed peas in place of red lentils, same green-seasoning brightness.",
+  "Watermelon & Crab":"New for Summer — a cold, raw-bar-style plate with no Winter counterpart.",
+  "Crispy Oysters":"Unchanged — berbere, pikliz, lemon.",
+  "Kachumbari":"New for Summer — a fresh tomato-and-onion salad; Winter's greens were beet, kale, cabbage Caesar and Brussels.",
+  "Maier Peach Salad":"Summer's seasonal salad, in place of Winter's Beet and Kale salads.",
+  "Callaloo Salad":"Evolves Winter's Okan Kale Salad — keeps the dried mango, swaps kale for callaloo greens and pistachio for peanut and coconut.",
+  "Coco Bread":"Bread service wasn't on the Winter training cards — no direct comparison.",
+  "GF Cornbread":"Bread service wasn't on the Winter training cards — no direct comparison.",
+  "Tostones":"Bread service wasn't on the Winter training cards — no direct comparison.",
+  "Charred Sweet Corn Ribs":"New for Summer — seasonal corn, no Winter counterpart.",
+  "Island Callaloo":"This is Winter's 'Island Collards,' essentially — slow-cooked greens with mojo, onion and garlic.",
+  "Carrots in Dirt":"Unchanged — roasted carrots, honey, maple, rye crumb.",
+  "Crispy Okra":"Takes the crispy-vegetable slot from Winter's Crispy Brussels.",
+  "Jerk Macaroni & Cheese":"New to the printed menu — not on the Winter cards.",
+  "Djon Djon":"Unchanged — the four rices carry over from Winter.",
+  "Carolina Gold":"Unchanged — the four rices carry over from Winter.",
+  "Callaloo Rice":"Unchanged — the four rices carry over from Winter.",
+  "Jollof":"Unchanged — the four rices carry over from Winter.",
+  "Pork Shank":"Same fire-finished shank; Winter paired it with sweet potato mash and harissa drippings, Summer with malanga mash and roasted tomatillo.",
+  "Peach Pepper Chicken":"Evolves Winter's Lemon Pepper Chicken — same callaloo rice, but a sweet-hot peach glaze instead of lemon-pepper and onion soubise.",
+  "Curried Goat":"Same slow-cooked goat; Winter served it with potato, peas and Carolina Gold, Summer with coconut rice, plantain, butter beans and crispy shallots.",
+  "Hanger Steak":"Same simply-grilled steak; Winter sides were fingerlings, goma yogurt and broccolini, Summer is corn succotash, harissa and bok choy.",
+  "Jerk Oxtails":"Same dish, now finished with charred pineapple.",
+  "Cashew Curry with Lobster":"Same cashew curry and lobster; Winter's roots (broccoli, squash, rutabaga) swap to Summer veg — plantain, green beans, zucchini, eggplant.",
+  "Escovitch Snapper":"Unchanged — whole fried fish, escovitch peppers, sharp vinegar.",
+  "West African Gumbo":"Winter was shrimp and mussels with fennel; Summer adds crab and swaps fennel for chayote.",
+  "Local Fish":"New for Summer — brings the peanut-sauce idea from Winter's Beef Mafé to a crisp local fish over Djon Djon rice.",
+  "Djon Djon Noodles":"Unchanged — black mushrooms, spinach, green onion.",
+  "Eggplant Yassa":"New for Summer — replaces Winter's vegetable mains (Moroccan Tagine, Veggie Pastelon).",
+  "Gullah Okra & Tomatoes":"New for Summer — a warm-weather stewed-okra dish with no Winter counterpart.",
+  "Suya Spiced Cauliflower":"New for Summer — a suya-spiced vegetable main; Winter's vegetable star was the Veggie Pastelon."
+};
+
+/* ================= APP ================= */
+const state = { q:"", avoid:new Set(), diet:new Set(), push:false, compare:false, hideUnsafe:false };
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+
+/* ---- "Push tonight" selection (saved per device; falls back to defaults) ---- */
+function loadPush(){
+  try{ const raw=localStorage.getItem('okan_push'); if(raw) return new Set(JSON.parse(raw)); }catch(e){}
+  return new Set(MENU.filter(m=>m.featured).map(m=>m.name));
+}
+let pushSet=loadPush();
+function savePush(){
+  try{ localStorage.setItem('okan_push',JSON.stringify([...pushSet])); localStorage.setItem('okan_push_ts',new Date().toString()); }catch(e){}
+}
+function isFeatured(item){ return pushSet.has(item.name); }
+
+/* ---- "86 / out of stock" selection (saved per device) ---- */
+function load86(){ try{ const raw=localStorage.getItem('okan_86'); if(raw) return new Set(JSON.parse(raw)); }catch(e){} return new Set(); }
+let eightySet=load86();
+function save86(){ try{ localStorage.setItem('okan_86',JSON.stringify([...eightySet])); localStorage.setItem('okan_86_ts',new Date().toString()); }catch(e){} }
+function is86(item){ return eightySet.has(item.name); }
+
+/* chips */
+const allergenChips=document.getElementById('allergenChips');
+ALLERGENS.forEach(a=>{const c=el('div','chip',a);c.onclick=()=>{c.classList.toggle('on');state.avoid.has(a)?state.avoid.delete(a):state.avoid.add(a);syncQuick();render();};allergenChips.appendChild(c);});
+const dietChips=document.getElementById('dietChips');
+DIETARY.forEach(d=>{const c=el('div','chip diet',d);c.dataset.diet=d;c.onclick=()=>{toggleDiet(d);};dietChips.appendChild(c);});
+
+function toggleDiet(d){ state.diet.has(d)?state.diet.delete(d):state.diet.add(d); syncQuick(); render(); }
+function syncQuick(){
+  document.querySelectorAll('#dietChips .chip').forEach(c=>c.classList.toggle('on',state.diet.has(c.dataset.diet)));
+  document.getElementById('qVegan').classList.toggle('on',state.diet.has('Vegan'));
+  document.getElementById('qGF').classList.toggle('on',state.diet.has('Gluten-Free'));
+  document.getElementById('pushChip').classList.toggle('on',state.push);
+  document.getElementById('cmpChip').classList.toggle('on',state.compare);
+}
+document.getElementById('qVegan').onclick=()=>toggleDiet('Vegan');
+document.getElementById('qGF').onclick=()=>toggleDiet('Gluten-Free');
+document.getElementById('pushChip').onclick=()=>{state.push=!state.push;syncQuick();render();};
+document.getElementById('cmpChip').onclick=()=>{state.compare=!state.compare;syncQuick();render();};
+
+const tool=document.getElementById('tool');
+document.getElementById('toolHead').onclick=()=>tool.classList.toggle('open');
+document.getElementById('hideUnsafe').onchange=e=>{state.hideUnsafe=e.target.checked;render();};
+document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value;render();});
+document.getElementById('clearBtn').onclick=resetAll;
+
+function resetAll(){
+  state.q="";state.avoid.clear();state.diet.clear();state.push=false;state.hideUnsafe=false;
+  document.getElementById('q').value="";document.getElementById('hideUnsafe').checked=false;
+  document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  syncQuick();render();
+}
+
+function statusFor(item){
+  if(state.avoid.size===0) return {kind:"none"};
+  const contains=item.allergens.contains||[], removable=new Set(item.allergens.removable||[]);
+  const hits=[...state.avoid].filter(a=>contains.includes(a));
+  if(hits.length===0) return {kind:"safe"};
+  const hard=hits.filter(a=>!removable.has(a));
+  if(hard.length===0) return {kind:"mod",mods:hits};
+  return {kind:"no",bad:hard};
+}
+const STATUS_TEXT={safe:"✓ Safe",mod:"◐ Can modify",no:"✕ Contains"};
+
+function matchesSearch(item){
+  if(!state.q.trim())return true;
+  const hay=norm([item.name,item.desc,(item.points||[]).join(" "),(item.dietary||[]).join(" "),(item.allergens.contains||[]).join(" "),item.cat,item.pour].join(" "));
+  return norm(state.q).split(/\s+/).every(w=>hay.includes(w));
+}
+function matchesDiet(item){
+  if(state.diet.size===0)return true;
+  const has=new Set(item.dietary||[]);
+  return [...state.diet].every(d=>has.has(d));
+}
+
+function foodCard(item){
+  const st=statusFor(item);
+  const c=el('div','card'+(isFeatured(item)?' feat':'')+(is86(item)?' eightysix':''));
+  const head=el('div','card-head'), main=el('div','main');
+  const nl=el('div','nameline');
+  nl.appendChild(el('p','name',item.name));
+  if(item.price) nl.appendChild(el('span','price', item.price==="Market"?"MP":"$"+item.price));
+  main.appendChild(nl);
+  main.appendChild(el('p','desc',item.desc));
+  const badges=el('div','badges');
+  if(is86(item)) badges.appendChild(el('span','tag eightysix','● 86 · Out'));
+  if(isFeatured(item)) badges.appendChild(el('span','tag push','★ Push tonight'));
+  (item.dietary||[]).forEach(d=>badges.appendChild(el('span','tag diet',d)));
+  if(badges.children.length) main.appendChild(badges);
+  head.appendChild(main);
+  if(st.kind!=="none") head.appendChild(el('span','status '+st.kind,STATUS_TEXT[st.kind]));
+  head.appendChild(el('span','','<svg class="chev" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'));
+
+  const body=el('div','card-body');
+  if(item.points&&item.points.length){
+    const s=el('div','sect');s.appendChild(el('div','lbl','Talking points'));
+    const ul=el('ul','points');item.points.forEach(p=>ul.appendChild(el('li',null,p)));
+    if(state.compare&&PREV[item.name]) ul.appendChild(el('li','cmp','<b>vs. Winter menu:</b> '+PREV[item.name]));
+    s.appendChild(ul);body.appendChild(s);
+  }
+  if(!item.drink){
+    const asect=el('div','sect');asect.appendChild(el('div','lbl','Allergens'));
+    const grid=el('div','allergrid');
+    const contains=item.allergens.contains||[],removable=new Set(item.allergens.removable||[]);
+    if(contains.length===0) grid.appendChild(el('span','al none','None of the major allergens'));
+    else contains.forEach(a=>{const rm=removable.has(a);grid.appendChild(el('span','al '+(rm?'removable':'contains'),a+' <span class="mk">'+(rm?'can omit':'contains')+'</span>'));});
+    asect.appendChild(grid);
+    if(item.verify) asect.appendChild(el('div','verify','⚠ '+item.verify));
+    body.appendChild(asect);
+  }
+  if(st.kind==="mod") body.appendChild(el('div','modnote','Can be made safe — ask the kitchen to omit: <b>'+st.mods.join(', ')+'</b>.'));
+  if(st.kind==="no") body.appendChild(el('div','modnote','Not suitable — contains <b>'+st.bad.join(', ')+'</b> that can’t be removed.'));
+  if(item.pour){
+    const s=el('div','sect');s.appendChild(el('div','lbl','Pour'));
+    const row=el('div','pair');row.appendChild(el('span','ptype','Pour'));
+    row.appendChild(el('div','pbody','<span class="pname">'+item.pour+'</span>'));
+    s.appendChild(row);body.appendChild(s);
+  }
+  c.appendChild(head);c.appendChild(body);
+  head.onclick=()=>c.classList.toggle('open');
+  return {node:c,status:st.kind};
+}
+
+function wineCard(w){
+  const c=el('div','card');
+  const head=el('div','card-head'),main=el('div','main');
+  const nl=el('div','nameline');
+  nl.appendChild(el('p','name',w.name));
+  nl.appendChild(el('span','price',(w.glass?'$'+w.glass+' / ':'')+'$'+w.bottle));
+  main.appendChild(nl);
+  main.appendChild(el('p','desc',w.type+' · '+w.region));
+  head.appendChild(main);
+  head.appendChild(el('span','','<svg class="chev" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'));
+  const body=el('div','card-body');
+  const s=el('div','sect');s.appendChild(el('div','lbl',w.note));
+  const paired=MENU.filter(m=>m.pour&&norm(m.pour)===norm(w.name)).map(m=>m.name);
+  const pw=el('div','pairswith');
+  if(paired.length) pw.innerHTML='<b style="color:var(--gold-soft)">Pairs with:</b> '+paired.join(' · ');
+  else pw.innerHTML='<span class="none">Not listed as a dish pour — offer by preference.</span>';
+  s.appendChild(pw);body.appendChild(s);
+  c.appendChild(head);c.appendChild(body);
+  head.onclick=()=>c.classList.toggle('open');
+  return c;
+}
+
+function wineMatchesSearch(w){
+  if(!state.q.trim())return true;
+  const hay=norm([w.name,w.type,w.region,w.note].join(" "));
+  return norm(state.q).split(/\s+/).every(x=>hay.includes(x));
+}
+
+function render(){
+  const menu=document.getElementById('menu');menu.innerHTML="";
+  if(eightySet.size){
+    const n86=MENU.filter(m=>is86(m)).map(m=>m.name);
+    const board=el('div','board86');
+    board.innerHTML='<b>86’d tonight ('+n86.length+'):</b> '+n86.join(' · ');
+    menu.appendChild(board);
+  }
+  const order={safe:0,mod:1,none:1,no:2};
+  const foodFiltersActive = state.avoid.size||state.diet.size;
+  let shown=0;
+
+  const bar=document.getElementById('activeBar');bar.innerHTML="";
+  if(state.avoid.size||state.diet.size||state.push){
+    bar.classList.add('show');bar.appendChild(el('span','','Filtering:'));
+    if(state.push) bar.appendChild(el('span','pill push','★ Push tonight'));
+    state.avoid.forEach(a=>bar.appendChild(el('span','pill','no '+a)));
+    state.diet.forEach(d=>bar.appendChild(el('span','pill diet',d)));
+    const r=el('span','resetlink','reset');r.onclick=resetAll;bar.appendChild(r);
+  } else bar.classList.remove('show');
+
+  const cats=[];MENU.forEach(m=>{if(!cats.includes(m.cat))cats.push(m.cat);});
+  cats.forEach(cat=>{
+    const isDrink=MENU.find(m=>m.cat===cat)?.drink;
+    let items=MENU.filter(m=>m.cat===cat&&matchesSearch(m)&&matchesDiet(m));
+    if(state.push) items=items.filter(m=>isFeatured(m));
+    if(isDrink&&foodFiltersActive) items=[]; // hide drinks when filtering food by allergen/diet
+    items=items.map(m=>({m,st:statusFor(m).kind})).filter(x=>!(state.hideUnsafe&&x.st==="no"));
+    if(state.avoid.size) items.sort((a,b)=>order[a.st]-order[b.st]);
+    if(!items.length) return;
+    const sec=el('div','cat');
+    const h=el('h2');h.appendChild(el('span',null,cat));
+    if(cat==="Rice") h.appendChild(el('span','cnote','sides · no dedicated pour'));
+    sec.appendChild(h);menu.appendChild(sec);
+    items.forEach(x=>{menu.appendChild(foodCard(x.m).node);shown++;});
+  });
+
+  // Wine section — hidden when filtering food, or when push is on
+  if(!foodFiltersActive && !state.push){
+    const types=["Red","White","Bubbles"];
+    let wineShown=0;const frag=document.createDocumentFragment();
+    types.forEach(tp=>{
+      const ws=WINE.filter(w=>w.type===tp&&wineMatchesSearch(w));
+      if(!ws.length)return;
+      const sec=el('div','cat');const h=el('h2');h.appendChild(el('span',null,tp==="Bubbles"?"Wine · Bubbles":"Wine · "+tp));
+      sec.appendChild(h);frag.appendChild(sec);
+      ws.forEach(w=>{frag.appendChild(wineCard(w));wineShown++;shown++;});
+    });
+    menu.appendChild(frag);
+  }
+
+  document.getElementById('empty').style.display=shown?'none':'block';
+  document.getElementById('count').textContent=shown+(state.push?' push item'+(shown===1?'':'s'):(foodFiltersActive?' matching':' ')+' item'+(shown===1?'':'s'));
+}
+
+/* ---- Manager modal (Push tonight + 86 / Out) ---- */
+const mgrModal=document.getElementById('mgrModal');
+let mgrMode='push';
+function activeSet(){ return mgrMode==='push'?pushSet:eightySet; }
+function activeSave(){ mgrMode==='push'?savePush():save86(); }
+function fmtTs(){
+  const key=mgrMode==='push'?'okan_push_ts':'okan_86_ts';
+  try{ const ts=localStorage.getItem(key); if(ts){ const d=new Date(ts); return ' · updated '+d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); } }catch(e){}
+  return '';
+}
+function updateMgrCount(){ document.getElementById('mgrCount').textContent = activeSet().size+(mgrMode==='push'?' featured':' 86’d')+fmtTs(); }
+function buildManager(){
+  const list=document.getElementById('mgrList'); list.innerHTML="";
+  const set=activeSet();
+  MENU.filter(m=>!m.drink).forEach(m=>{
+    const row=el('label','mgr-row'+(mgrMode==='86'?' m86':''));
+    const cb=el('input'); cb.type='checkbox'; cb.checked=set.has(m.name);
+    cb.onchange=()=>{ cb.checked?set.add(m.name):set.delete(m.name); activeSave(); updateMgrCount(); syncQuick(); render(); };
+    const meta=el('div','mgr-meta'); meta.appendChild(el('span','mgr-name',m.name)); meta.appendChild(el('span','mgr-cat',m.cat));
+    row.appendChild(cb); row.appendChild(meta); list.appendChild(row);
+  });
+  updateMgrCount();
+}
+function setMode(mode){
+  mgrMode=mode;
+  document.getElementById('segPush').classList.toggle('on',mode==='push');
+  document.getElementById('seg86').classList.toggle('on',mode==='86');
+  document.getElementById('mgrTitle').textContent = mode==='push' ? 'Set tonight’s “Push”' : 'Set 86 / Out of stock';
+  document.getElementById('mgrSub').textContent = mode==='push'
+    ? 'Tap the dishes to feature tonight. Saved on this device — the whole floor sees the same picks.'
+    : 'Tap the dishes that are 86’d / out. They’ll show flagged and dimmed for staff, with a running list up top.';
+  buildManager();
+}
+function openMgr(){ setMode(mgrMode); mgrModal.classList.add('show'); }
+function closeMgr(){ mgrModal.classList.remove('show'); }
+document.getElementById('managerBtn').onclick=openMgr;
+document.getElementById('mgrBackdrop').onclick=closeMgr;
+document.getElementById('mgrDone').onclick=closeMgr;
+document.getElementById('segPush').onclick=()=>setMode('push');
+document.getElementById('seg86').onclick=()=>setMode('86');
+document.getElementById('mgrClear').onclick=()=>{ activeSet().clear(); activeSave(); buildManager(); syncQuick(); render(); };
+
+document.getElementById('foot').innerHTML =
+  "<b>Reminders for the floor:</b> Always confirm allergies with the kitchen — recipes and sourcing change. GF items are cooked in a dedicated fryer/prep area. "+
+  "<b>Coconut</b> is used across the menu (milk, cream, oil) and isn't flagged as a tree nut here — flag it for coconut-sensitive guests. "+
+  "<b>Bubbles pair with almost anything</b> (Don Luchi Prosecco or Los Monteros Cava Brut). Bottomless mimosas ($45) and the mimosa flight ($30) are brunch-only. "+
+  "Consuming raw or undercooked meat, poultry, seafood or eggs may increase risk of foodborne illness. "+
+  "<b>Managers:</b> tap the ⚙ up top to set tonight’s “Push” or to 86 items — saved on this device.";
+
+syncQuick();
+render();
+</script>
+</body>
+</html>
