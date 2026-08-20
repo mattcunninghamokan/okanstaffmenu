@@ -441,29 +441,71 @@ const MENU = [
 
 /* ================= WINE BY THE GLASS ================= */
 const WINE = [
-  {name:"Sean Minor Pinot Noir", type:"Red", region:"Sonoma Coast, California", glass:"14", bottle:"49", note:"Light, red-fruited, food-friendly."},
-  {name:"Wormser Liebfrauenmorgen Dornfelder", type:"Red", region:"Germany", glass:"13", bottle:"42", note:"Soft, juicy, gently fruity German red."},
-  {name:"Big Flower Cabernet Sauvignon", type:"Red", region:"Stellenbosch, South Africa", glass:"15", bottle:"52", note:"Bold, dark-fruited Cab."},
-  {name:"Tentadora Malbec", type:"Red", region:"Cafayate, Argentina", glass:"15", bottle:"52", note:"Plush, dark plum and spice."},
-  {name:"Valdehermoso Joven Tempranillo", type:"Red", region:"Roa, Spain", glass:"16", bottle:"56", note:"Bright, juicy young Tempranillo."},
-  {name:"Brown Estate Zinfandel", type:"Red", region:"Napa Valley, California", glass:"", bottle:"72", note:"Jammy, brambly Zin. Bottle only."},
-  {name:"Markham Cabernet Sauvignon", type:"Red", region:"Napa Valley, California", glass:"", bottle:"89", note:"Structured Napa Cab. Bottle only."},
-  {name:"Brown Estate Chaos Theory Red Blend", type:"Red", region:"Napa Valley, California", glass:"", bottle:"58", note:"Layered red blend. Bottle only."},
+  {name:"Sean Minor Pinot Noir", type:"Red", region:"Sonoma Coast, California", glass:"14", bottle:"49",
+   taste:"Light, silky Pinot — red cherry and raspberry, bright and food-friendly.",
+   talk:"Sonoma Coast's ocean fog and cool air make it a top California site for elegant Pinot Noir."},
+  {name:"Wormser Liebfrauenmorgen Dornfelder", type:"Red", region:"Germany", glass:"13", bottle:"42",
+   taste:"Soft, juicy German red — dark berries, mild acidity, light-medium body.",
+   talk:"From Worms in Rheinhessen, whose Liebfrauenkirche gave the world the name 'Liebfraumilch.'"},
+  {name:"Big Flower Cabernet Sauvignon", type:"Red", region:"Stellenbosch, South Africa", glass:"15", bottle:"52",
+   taste:"Bold Cabernet — blackcurrant and cassis, firm tannins, medium-full.",
+   talk:"Stellenbosch, near Cape Town, is South Africa's flagship Cabernet region — warm valleys, mountain slopes."},
+  {name:"Tentadora Malbec", type:"Red", region:"Cafayate, Argentina", glass:"15", bottle:"52",
+   taste:"Plush high-altitude Malbec — ripe plum, blackberry, a floral lift, soft tannins.",
+   talk:"Cafayate, in Salta's Calchaquí Valleys, holds some of the world's highest vineyards — intense sun, cool nights."},
+  {name:"Valdehermoso Joven Tempranillo", type:"Red", region:"Roa, Spain", glass:"16", bottle:"56",
+   taste:"Juicy young Tempranillo — black cherry and plum, fresh, medium body.",
+   talk:"From Ribera del Duero, where Tempranillo (local 'Tinta del País') grows on a high ~800m plateau."},
+  {name:"Brown Estate Zinfandel", type:"Red", region:"Napa Valley, California", glass:"", bottle:"72",
+   taste:"Bold Napa Zin — blackberry, brambly spice, jammy warmth, full body.",
+   talk:"Brown Estate is widely recognized as Napa's first Black-owned estate winery — Zinfandel is their founding flagship."},
+  {name:"Markham Cabernet Sauvignon", type:"Red", region:"Napa Valley, California", glass:"", bottle:"89",
+   taste:"Structured Napa Cabernet — cassis, black cherry, cocoa, firm and full.",
+   talk:"Napa is California's benchmark for Cabernet; Markham is a longtime St. Helena, mid-valley producer."},
+  {name:"Brown Estate Chaos Theory Red Blend", type:"Red", region:"Napa Valley, California", glass:"", bottle:"58",
+   taste:"Layered Napa blend — dark fruit and spice, smooth, full-bodied.",
+   talk:"Brown Estate — widely recognized as Napa's first Black-owned estate — makes Chaos Theory as its signature blend."},
 
-  {name:"Moscato Cuvée Adriana", type:"White", region:"Italy", glass:"12", bottle:"45", note:"Sweet, floral, low-alcohol."},
-  {name:"Rosé de Printemps", type:"White", region:"Provence, France", glass:"13", bottle:"48", note:"Dry, crisp Provençal rosé."},
-  {name:"Flora Lisa Pinot Grigio", type:"White", region:"Apennine Mtns, Central Italy", glass:"13", bottle:"48", note:"Light, crisp, easy."},
-  {name:"House of Brown Chardonnay", type:"White", region:"Lodi, California", glass:"14", bottle:"49", note:"Round, gently oaked Chardonnay."},
-  {name:"Radley & Finch Sauvignon Blanc", type:"White", region:"Western Cape, South Africa", glass:"14", bottle:"49", note:"Zesty, citrusy Sauvignon Blanc."},
-  {name:"Big Salt Sauvignon Blanc", type:"White", region:"Oregon", glass:"16", bottle:"58", note:"Saline, bright, coastal."},
-  {name:"Raats Chenin Blanc", type:"White", region:"Coastal Region, South Africa", glass:"15", bottle:"52", note:"Fresh, off-dry Chenin."},
-  {name:"Blanc de Noir", type:"White", region:"France", glass:"16", bottle:"58", note:"Delicate white made from red grapes."},
-  {name:"Lemelson White Pinot Noir", type:"White", region:"Willamette Valley, Oregon", glass:"", bottle:"65", note:"Unusual white-pressed Pinot Noir. Bottle only."},
+  {name:"Moscato Cuvée Adriana", type:"White", region:"Italy", glass:"12", bottle:"45",
+   taste:"Sweet, gently fizzy Moscato — peach and orange blossom, low alcohol.",
+   talk:"Italian Moscato (Muscat) is loved for fragrant peach-and-flower aromas and a light, lightly sweet style."},
+  {name:"Rosé de Printemps", type:"White", region:"Provence, France", glass:"13", bottle:"48",
+   taste:"Pale, dry rosé — strawberry and citrus, delicate and crisp.",
+   talk:"Provence is the world's benchmark for pale, dry rosé — over half its wine is pink."},
+  {name:"Flora Lisa Pinot Grigio", type:"White", region:"Apennine Mtns, Central Italy", glass:"13", bottle:"48",
+   taste:"Light, crisp Pinot Grigio — green apple, pear, citrus, dry.",
+   talk:"Pinot Grigio is Italy's most popular white — clean and easy; central Italy gives a soft, approachable style."},
+  {name:"House of Brown Chardonnay", type:"White", region:"Lodi, California", glass:"14", bottle:"49",
+   taste:"Round California Chardonnay — ripe apple and pear, citrus, light oak.",
+   talk:"From Lodi in California's Central Valley — a warm, sunny region known for ripe, generous whites."},
+  {name:"Radley & Finch Sauvignon Blanc", type:"White", region:"Western Cape, South Africa", glass:"14", bottle:"49",
+   taste:"Zesty Sauvignon Blanc — gooseberry, passionfruit, citrus, crisp.",
+   talk:"Western Cape's cool Atlantic breezes give South African Sauvignon Blanc bright, zesty citrus and tropical notes."},
+  {name:"Big Salt Sauvignon Blanc", type:"White", region:"Oregon", glass:"16", bottle:"58",
+   taste:"Aromatic Oregon white — floral, citrus, a saline snap, lively.",
+   talk:"Made by Ovum Wines in Oregon, known for aromatic whites; the name nods to the nearby Pacific coast."},
+  {name:"Raats Chenin Blanc", type:"White", region:"Coastal Region, South Africa", glass:"15", bottle:"52",
+   taste:"Fresh Chenin Blanc — quince, pear, citrus, a waxy texture, crisp.",
+   talk:"Chenin Blanc is South Africa's signature white and most-planted grape; Raats built its name specializing in it."},
+  {name:"Blanc de Noir", type:"White", region:"France", glass:"16", bottle:"58",
+   taste:"Pale, soft white from red grapes — red-apple, delicate, easy.",
+   talk:"'Blanc de noir' means a white wine pressed from dark-skinned grapes, with the skins removed so little color transfers."},
+  {name:"Lemelson White Pinot Noir", type:"White", region:"Willamette Valley, Oregon", glass:"", bottle:"65",
+   taste:"Crisp white from Pinot Noir — pear, citrus, a whisper of red fruit.",
+   talk:"From Oregon's Willamette Valley, the U.S. benchmark for Pinot Noir — here pressed pale into a white."},
 
-  {name:"Don Luchi Prosecco", type:"Bubbles", region:"Italy", glass:"13", bottle:"48", note:"Easy, lightly sweet Prosecco."},
-  {name:"Los Monteros Cava Brut", type:"Bubbles", region:"Spain", glass:"14", bottle:"49", note:"Dry, crisp Cava."},
-  {name:"Fritz Müller (N/A)", type:"Bubbles", region:"Appenheim, Germany", glass:"13", bottle:"48", note:"Non-alcoholic white sparkling."},
-  {name:"La Cuvée Laurent-Perrier Brut", type:"Bubbles", region:"France", glass:"", bottle:"79", note:"Champagne. Bottle only."}
+  {name:"Don Luchi Prosecco", type:"Bubbles", region:"Italy", glass:"13", bottle:"48",
+   taste:"Light, frothy Prosecco — green apple, pear, floral, off-dry.",
+   talk:"Prosecco is made from Glera grapes in northeast Italy, tank-fermented for fresh, fruity fizz."},
+  {name:"Los Monteros Cava Brut", type:"Bubbles", region:"Spain", glass:"14", bottle:"49",
+   taste:"Dry, crisp Cava — green apple and citrus, fine bready bubbles.",
+   talk:"Cava is Spain's traditional-method sparkler from Catalonia — bottle-fermented like Champagne."},
+  {name:"Fritz Müller (N/A)", type:"Bubbles", region:"Appenheim, Germany", glass:"13", bottle:"48",
+   taste:"Gently sparkling, off-dry, non-alcoholic — grapey, floral, refreshing.",
+   talk:"Our zero-proof fizz — a great celebratory pour for guests skipping alcohol; German Müller-Thurgau style."},
+  {name:"La Cuvée Laurent-Perrier Brut", type:"Bubbles", region:"France", glass:"", bottle:"79",
+   taste:"Dry Champagne — crisp citrus, white flowers, brioche, fine mousse.",
+   talk:"Laurent-Perrier is a historic grande-marque Champagne house (founded 1812), known for a fresh, Chardonnay-led style."}
 ];
 
 /* ================= PREVIOUS MENU (Winter 2026) COMPARISON =================
@@ -642,10 +684,12 @@ function wineCard(w){
   head.appendChild(main);
   head.appendChild(el('span','','<svg class="chev" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'));
   const body=el('div','card-body');
-  const s=el('div','sect');s.appendChild(el('div','lbl',w.note));
+  if(w.taste){const t=el('div','sect');t.appendChild(el('div','lbl','Tasting note'));t.appendChild(el('div','pairswith',w.taste));body.appendChild(t);}
+  if(w.talk){const t=el('div','sect');t.appendChild(el('div','lbl','Talk about it'));t.appendChild(el('div','pairswith',w.talk));body.appendChild(t);}
   const paired=MENU.filter(m=>m.pour&&norm(m.pour)===norm(w.name)).map(m=>m.name);
+  const s=el('div','sect');
   const pw=el('div','pairswith');
-  if(paired.length) pw.innerHTML='<b style="color:var(--gold-soft)">Pairs with:</b> '+paired.join(' · ');
+  if(paired.length) pw.innerHTML='<b style="color:var(--teal-dk)">Pairs with:</b> '+paired.join(' · ');
   else pw.innerHTML='<span class="none">Not listed as a dish pour — offer by preference.</span>';
   s.appendChild(pw);body.appendChild(s);
   c.appendChild(head);c.appendChild(body);
