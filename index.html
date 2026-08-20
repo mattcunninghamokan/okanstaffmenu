@@ -274,7 +274,7 @@ const MENU = [
   { cat:"Greens", name:"Kachumbari", price:"13", desc:"Tomato, red onion, cucumber, Scotch bonnet, cilantro, lime.",
     points:["Fresh East African tomato-and-onion salad — vegan and free of the major allergens.","Great clean, safe option for allergy tables.","Scotch bonnet gives a gentle kick."],
     dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:1,
-    allergens:{contains:[],removable:[]}, pour:"Big Salt Sauvignon Blanc" },
+    allergens:{contains:[],removable:[]}, pour:"Big Salt" },
 
   { cat:"Greens", name:"Maier Peach Salad", price:"13", desc:"Spinach, grilled peaches, country ham, watercress, cane vinegar, benne.",
     points:["Summer peaches with salty country ham and peppery watercress.","Contains sesame (benne seed) — it's a finish and can be left off.","Drop the ham to make it vegetarian."],
@@ -322,7 +322,7 @@ const MENU = [
   { cat:"Goods", name:"Crispy Okra", price:"12", desc:"Palm-oil vinaigrette, benne, urfa, charred lemon.",
     points:["Crisp-charred okra — no slime, all texture. Vegan.","Contains sesame (benne) as a finish, which can be left off.","Gentle Urfa-pepper warmth."],
     dietary:["Vegetarian","Vegan","Gluten-Free"], spice:1,
-    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt Sauvignon Blanc" },
+    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt" },
 
   { cat:"Goods", name:"Jerk Macaroni & Cheese", price:"12", desc:"Smoked gouda, mozzarella, peppers, garlic.",
     points:["GF pasta in a jerk-spiced smoked-gouda sauce — rich and a little spicy.","Very much a dairy dish (four dairy elements) — not for dairy allergies.","Jerk brings real warmth."],
@@ -410,7 +410,7 @@ const MENU = [
   { cat:"Of the Earth", name:"Eggplant Yassa", price:"20", desc:"Onions, mustard, lemon, benne.",
     points:["Senegalese-style eggplant in a tangy mustard-onion yassa — vegan.","Contains sesame (benne) as a finish, which can be left off.","Scotch-bonnet gives light heat."],
     dietary:["Vegetarian","Vegan","Gluten-Free"], spice:1,
-    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt Sauvignon Blanc" },
+    allergens:{contains:["Sesame"],removable:["Sesame"]}, pour:"Big Salt" },
 
   { cat:"Of the Earth", name:"Gullah Okra & Tomatoes", price:"20", desc:"Stewed okra and tomatoes over rice with fresh herbs.",
     points:["Classic Gullah stewed okra and tomatoes over Carolina Gold rice — vegan, GF.","Free of the major allergens — an easy, comforting recommend.","Mild."],
@@ -469,7 +469,7 @@ const WINE = [
   {name:"Moscato Cuvée Adriana", type:"White", region:"Italy", glass:"12", bottle:"45",
    taste:"Sweet, gently fizzy Moscato — peach and orange blossom, low alcohol.",
    talk:"Italian Moscato (Muscat) is loved for fragrant peach-and-flower aromas and a light, lightly sweet style."},
-  {name:"Rosé de Printemps", type:"White", region:"Provence, France", glass:"13", bottle:"48",
+  {name:"Rosé de Printemps", type:"Rosé", region:"Provence, France", glass:"13", bottle:"48",
    taste:"Pale, dry rosé — strawberry and citrus, delicate and crisp.",
    talk:"Provence is the world's benchmark for pale, dry rosé — over half its wine is pink."},
   {name:"Flora Lisa Pinot Grigio", type:"White", region:"Apennine Mtns, Central Italy", glass:"13", bottle:"48",
@@ -477,11 +477,11 @@ const WINE = [
    talk:"Pinot Grigio is Italy's most popular white — clean and easy; central Italy gives a soft, approachable style."},
   {name:"House of Brown Chardonnay", type:"White", region:"Lodi, California", glass:"14", bottle:"49",
    taste:"Round California Chardonnay — ripe apple and pear, citrus, light oak.",
-   talk:"From Lodi in California's Central Valley — a warm, sunny region known for ripe, generous whites."},
+   talk:"A Black-owned California label from the Brown family behind Napa's Brown Estate — a ripe, easygoing Chardonnay."},
   {name:"Radley & Finch Sauvignon Blanc", type:"White", region:"Western Cape, South Africa", glass:"14", bottle:"49",
    taste:"Zesty Sauvignon Blanc — gooseberry, passionfruit, citrus, crisp.",
    talk:"Western Cape's cool Atlantic breezes give South African Sauvignon Blanc bright, zesty citrus and tropical notes."},
-  {name:"Big Salt Sauvignon Blanc", type:"White", region:"Oregon", glass:"16", bottle:"58",
+  {name:"Big Salt", type:"White", region:"Oregon", glass:"16", bottle:"58",
    taste:"Aromatic Oregon white — floral, citrus, a saline snap, lively.",
    talk:"Made by Ovum Wines in Oregon, known for aromatic whites; the name nods to the nearby Pacific coast."},
   {name:"Raats Chenin Blanc", type:"White", region:"Coastal Region, South Africa", glass:"15", bottle:"52",
@@ -742,7 +742,7 @@ function render(){
 
   // Wine section — hidden when filtering food, or when push is on
   if(!foodFiltersActive && !state.push){
-    const types=["Red","White","Bubbles"];
+    const types=["Red","Rosé","White","Bubbles"];
     let wineShown=0;const frag=document.createDocumentFragment();
     types.forEach(tp=>{
       const ws=WINE.filter(w=>w.type===tp&&wineMatchesSearch(w));
