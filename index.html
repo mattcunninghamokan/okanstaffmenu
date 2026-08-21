@@ -152,6 +152,10 @@ footer b{color:var(--ink);}
 .toTop{position:fixed;right:16px;bottom:16px;z-index:60;display:none;align-items:center;gap:6px;background:var(--teal);color:#fff;border:none;border-radius:999px;padding:11px 17px;font-family:var(--body);font-size:.85rem;font-weight:600;letter-spacing:.03em;box-shadow:0 5px 16px rgba(0,0,0,.22);cursor:pointer;}
 .toTop:hover{background:var(--plum);}
 .toTop.show{display:inline-flex;}
+.jumpnav{display:flex;gap:7px;flex-wrap:wrap;padding:2px 0 12px;}
+.jumpnav a{cursor:pointer;font-family:var(--body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--plum);padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:background .15s,color .15s,border-color .15s;}
+.jumpnav a:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.cat{scroll-margin-top:170px;}
 
 </style>
 </head>
@@ -173,6 +177,12 @@ footer b{color:var(--ink);}
       <div class="qchip push" id="pushChip">★ Push tonight</div>
       <div class="qchip cmp" id="cmpChip">↺ Compare last menu</div>
     </div>
+    <nav class="jumpnav" id="jumpNav">
+      <a data-jump="jump-food">Food</a>
+      <a data-jump="jump-cocktails">Cocktails</a>
+      <a data-jump="jump-beer">Beer</a>
+      <a data-jump="jump-wine">Wine</a>
+    </nav>
   </div>
 </header>
 
@@ -763,6 +773,7 @@ function render(){
   } else bar.classList.remove('show');
 
   const cats=[];MENU.forEach(m=>{if(!cats.includes(m.cat))cats.push(m.cat);});
+  let firstFood=true;
   cats.forEach(cat=>{
     const isDrink=MENU.find(m=>m.cat===cat)?.drink;
     let items=MENU.filter(m=>m.cat===cat&&matchesSearch(m)&&matchesDiet(m));
@@ -772,6 +783,9 @@ function render(){
     if(state.avoid.size) items.sort((a,b)=>order[a.st]-order[b.st]);
     if(!items.length) return;
     const sec=el('div','cat');
+    if(cat==="Cocktails") sec.id="jump-cocktails";
+    else if(cat==="Draft Beer") sec.id="jump-beer";
+    else if(firstFood){ sec.id="jump-food"; firstFood=false; }
     const h=el('h2');h.appendChild(el('span',null,cat));
     if(cat==="Rice") h.appendChild(el('span','cnote','sides · no dedicated pour'));
     sec.appendChild(h);menu.appendChild(sec);
@@ -781,11 +795,12 @@ function render(){
   // Wine section — hidden when filtering food, or when push is on
   if(!foodFiltersActive && !state.push){
     const types=["Red","Rosé","White","Bubbles"];
-    let wineShown=0;const frag=document.createDocumentFragment();
+    let wineShown=0;let firstWine=true;const frag=document.createDocumentFragment();
     types.forEach(tp=>{
       const ws=WINE.filter(w=>w.type===tp&&wineMatchesSearch(w));
       if(!ws.length)return;
-      const sec=el('div','cat');const h=el('h2');h.appendChild(el('span',null,tp==="Bubbles"?"Wine · Bubbles":"Wine · "+tp));
+      const sec=el('div','cat');if(firstWine){ sec.id="jump-wine"; firstWine=false; }
+      const h=el('h2');h.appendChild(el('span',null,tp==="Bubbles"?"Wine · Bubbles":"Wine · "+tp));
       sec.appendChild(h);frag.appendChild(sec);
       ws.forEach(w=>{frag.appendChild(wineCard(w));wineShown++;shown++;});
     });
@@ -847,6 +862,15 @@ document.getElementById('foot').innerHTML =
 
 syncQuick();
 
+// Category jump nav (offsets for the sticky header)
+document.getElementById('jumpNav').addEventListener('click',e=>{
+  const a=e.target.closest('a[data-jump]'); if(!a) return;
+  const t=document.getElementById(a.dataset.jump); if(!t) return;
+  const hd=document.querySelector('header');
+  const off=(hd?hd.getBoundingClientRect().height:0)+10;
+  const y=t.getBoundingClientRect().top + window.scrollY - off;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+});
 // Back-to-top button
 const toTop=document.getElementById('toTop');
 toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
