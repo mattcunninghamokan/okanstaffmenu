@@ -152,6 +152,10 @@ footer b{color:var(--ink);}
 .toTop{position:fixed;right:16px;bottom:16px;z-index:60;display:none;align-items:center;gap:6px;background:var(--teal);color:#fff;border:none;border-radius:999px;padding:11px 17px;font-family:var(--body);font-size:.85rem;font-weight:600;letter-spacing:.03em;box-shadow:0 5px 16px rgba(0,0,0,.22);cursor:pointer;}
 .toTop:hover{background:var(--plum);}
 .toTop.show{display:inline-flex;}
+.jumpnav{display:flex;gap:7px;flex-wrap:wrap;padding:2px 0 12px;}
+.jumpnav a{cursor:pointer;font-family:var(--body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--plum);padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:background .15s,color .15s,border-color .15s;}
+.jumpnav a:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.cat{scroll-margin-top:170px;}
 
 </style>
 </head>
@@ -171,10 +175,14 @@ footer b{color:var(--ink);}
     </div>
     <div class="quick">
       <div class="qchip push" id="pushChip">★ Push tonight</div>
-      <div class="qchip diet" data-diet="Vegan" id="qVegan">Vegan</div>
-      <div class="qchip diet" data-diet="Gluten-Free" id="qGF">Gluten-Free</div>
       <div class="qchip cmp" id="cmpChip">↺ Compare last menu</div>
     </div>
+    <nav class="jumpnav" id="jumpNav">
+      <a data-jump="jump-food">Food</a>
+      <a data-jump="jump-cocktails">Cocktails</a>
+      <a data-jump="jump-beer">Beer</a>
+      <a data-jump="jump-wine">Wine</a>
+    </nav>
   </div>
 </header>
 
@@ -432,7 +440,7 @@ const MENU = [
     points:["House signature — Scotch with hibiscus and banana, tart and tropical.","Garnish: dried plantain."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
   { cat:"Cocktails", drink:true, name:"Passion Fruit Mojito", price:"15", desc:"Havana Club Rum, mint, passion fruit, lime, simple, club soda.",
     points:["Bright, refreshing, crushable — the easy summer pour."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
-  { cat:"Cocktails", drink:true, name:"Lilly Water / Omii Lii", price:"15", desc:"Gin, grape syrup, sage syrup, violet liqueur, lemon.",
+  { cat:"Cocktails", drink:true, name:"Omii Lii “Lilly Water”", price:"15", desc:"Gin, grape syrup, sage syrup, violet liqueur, lemon.",
     points:["A floral gin sour — grape and violet with a sage backbone, bright with lemon. Coupe; garnish grape + lemon peel."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
   { cat:"Cocktails", drink:true, name:"Wealth of the Motherland", price:"16", desc:"Kakira Vodka, elderflower, cucumber, lime, simple.",
     points:["Light, floral and cool — cucumber + elderflower. Great aperitif.","Glass: rocks. Garnish: cucumber wave."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
@@ -441,7 +449,25 @@ const MENU = [
   { cat:"Cocktails", drink:true, name:"Jelimuso", price:"18", desc:"El Mayor Tequila, mango, hibiscus syrup, lime.",
     points:["Tequila, mango and hibiscus — rich and vibrant."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
   { cat:"Cocktails", drink:true, name:"Oba Ife “King's Cup”", price:"18", desc:"Bourbon or rum, sage syrup, orange bitters, smoked tableside.",
-    points:["Smoked tableside — stirred and spirit-forward, herbal sage and orange. Our showpiece.","Glass: rocks. Garnish: orange peel + sage."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" }
+    points:["Smoked tableside — stirred and spirit-forward, herbal sage and orange. Our showpiece.","Glass: rocks. Garnish: orange peel + sage."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+
+  /* ---------- DRAFT BEER ---------- */
+  { cat:"Draft Beer", drink:true, name:"Service Brewing Co.", price:"7", desc:"Pilsner", points:["Draft — crisp, clean pilsner."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Draft Beer", drink:true, name:"Lot 9 Brewery “Hurts So Good”", price:"7", desc:"Hazy IPA", points:["Draft — juicy, hazy IPA."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Draft Beer", drink:true, name:"Westbrook", price:"7", desc:"Lager", points:["Draft — easy-drinking lager."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Draft Beer", drink:true, name:"Aloha Beaches", price:"7", desc:"Pineapple wheat", points:["Draft — tropical pineapple wheat."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+
+  /* ---------- BOTTLES & CANS ---------- */
+  { cat:"Bottles and Cans", drink:true, name:"Red Stripe", price:"8", desc:"Jamaican lager", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Corona", price:"6", desc:"Mexican lager", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Michelob Ultra", price:"6", desc:"Light lager", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Coast Brewing “Kölsch”", price:"6", desc:"Kölsch-style ale", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Service Brewing “Freedom Machine”", price:"7", desc:"Juicy IPA", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Side Hustle “South Island”", price:"9", desc:"Pilsner", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Edmund’s Oast “Leather Jacket”", price:"9", desc:"Porter", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Edmund’s Oast “Sour Guava Tangerine”", price:"9", desc:"Fruited sour", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Westbrook “Brown Ale”", price:"9", desc:"Brown ale", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Bottles and Cans", drink:true, name:"Legal Remedy “World Court”", price:"6", desc:"Mocha blonde stout", points:[], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" }
 ];
 
 /* ================= WINE BY THE GLASS ================= */
@@ -606,13 +632,9 @@ DIETARY.forEach(d=>{const c=el('div','chip diet',d);c.dataset.diet=d;c.onclick=(
 function toggleDiet(d){ state.diet.has(d)?state.diet.delete(d):state.diet.add(d); syncQuick(); render(); }
 function syncQuick(){
   document.querySelectorAll('#dietChips .chip').forEach(c=>c.classList.toggle('on',state.diet.has(c.dataset.diet)));
-  document.getElementById('qVegan').classList.toggle('on',state.diet.has('Vegan'));
-  document.getElementById('qGF').classList.toggle('on',state.diet.has('Gluten-Free'));
   document.getElementById('pushChip').classList.toggle('on',state.push);
   document.getElementById('cmpChip').classList.toggle('on',state.compare);
 }
-document.getElementById('qVegan').onclick=()=>toggleDiet('Vegan');
-document.getElementById('qGF').onclick=()=>toggleDiet('Gluten-Free');
 document.getElementById('pushChip').onclick=()=>{state.push=!state.push;syncQuick();render();};
 document.getElementById('cmpChip').onclick=()=>{state.compare=!state.compare;syncQuick();render();};
 
@@ -751,6 +773,7 @@ function render(){
   } else bar.classList.remove('show');
 
   const cats=[];MENU.forEach(m=>{if(!cats.includes(m.cat))cats.push(m.cat);});
+  let firstFood=true;
   cats.forEach(cat=>{
     const isDrink=MENU.find(m=>m.cat===cat)?.drink;
     let items=MENU.filter(m=>m.cat===cat&&matchesSearch(m)&&matchesDiet(m));
@@ -760,6 +783,9 @@ function render(){
     if(state.avoid.size) items.sort((a,b)=>order[a.st]-order[b.st]);
     if(!items.length) return;
     const sec=el('div','cat');
+    if(cat==="Cocktails") sec.id="jump-cocktails";
+    else if(cat==="Draft Beer") sec.id="jump-beer";
+    else if(firstFood){ sec.id="jump-food"; firstFood=false; }
     const h=el('h2');h.appendChild(el('span',null,cat));
     if(cat==="Rice") h.appendChild(el('span','cnote','sides · no dedicated pour'));
     sec.appendChild(h);menu.appendChild(sec);
@@ -769,11 +795,12 @@ function render(){
   // Wine section — hidden when filtering food, or when push is on
   if(!foodFiltersActive && !state.push){
     const types=["Red","Rosé","White","Bubbles"];
-    let wineShown=0;const frag=document.createDocumentFragment();
+    let wineShown=0;let firstWine=true;const frag=document.createDocumentFragment();
     types.forEach(tp=>{
       const ws=WINE.filter(w=>w.type===tp&&wineMatchesSearch(w));
       if(!ws.length)return;
-      const sec=el('div','cat');const h=el('h2');h.appendChild(el('span',null,tp==="Bubbles"?"Wine · Bubbles":"Wine · "+tp));
+      const sec=el('div','cat');if(firstWine){ sec.id="jump-wine"; firstWine=false; }
+      const h=el('h2');h.appendChild(el('span',null,tp==="Bubbles"?"Wine · Bubbles":"Wine · "+tp));
       sec.appendChild(h);frag.appendChild(sec);
       ws.forEach(w=>{frag.appendChild(wineCard(w));wineShown++;shown++;});
     });
@@ -835,6 +862,15 @@ document.getElementById('foot').innerHTML =
 
 syncQuick();
 
+// Category jump nav (offsets for the sticky header)
+document.getElementById('jumpNav').addEventListener('click',e=>{
+  const a=e.target.closest('a[data-jump]'); if(!a) return;
+  const t=document.getElementById(a.dataset.jump); if(!t) return;
+  const hd=document.querySelector('header');
+  const off=(hd?hd.getBoundingClientRect().height:0)+10;
+  const y=t.getBoundingClientRect().top + window.scrollY - off;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+});
 // Back-to-top button
 const toTop=document.getElementById('toTop');
 toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
