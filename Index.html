@@ -154,8 +154,11 @@ footer b{color:var(--ink);}
 .toTop.show{display:inline-flex;}
 .jumpnav{display:flex;gap:7px;flex-wrap:wrap;padding:2px 0 12px;}
 .jumpnav a{cursor:pointer;font-family:var(--body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--plum);padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:background .15s,color .15s,border-color .15s;}
-.jumpnav a:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.jumpnav a:hover,.jumpnav a.active{background:var(--teal);color:#fff;border-color:var(--teal);}
 .cat{scroll-margin-top:170px;}
+.group{scroll-margin-top:180px;text-align:center;margin:22px 0 6px;}
+.group .grouph{font-family:var(--disp);font-size:1.9rem;color:var(--plum);letter-spacing:.03em;}
+.group::after{content:"";display:block;width:60px;height:3px;background:var(--orange);margin:7px auto 0;border-radius:2px;}
 
 </style>
 </head>
@@ -164,7 +167,6 @@ footer b{color:var(--ink);}
 <header>
   <div class="wrap">
     <div class="brand"><h1>OKÀN</h1><p>Staff Menu Guide · Summer</p>
-      <button id="managerBtn" class="gear" title="Manager — set tonight's Push" aria-label="Manager">⚙</button>
     </div>
     <div class="searchrow">
       <div class="search">
@@ -174,11 +176,11 @@ footer b{color:var(--ink);}
       <button class="clearbtn" id="clearBtn">Clear</button>
     </div>
     <div class="quick">
-      <div class="qchip push" id="pushChip">★ Push tonight</div>
       <div class="qchip cmp" id="cmpChip">↺ Compare last menu</div>
     </div>
     <nav class="jumpnav" id="jumpNav">
-      <a data-jump="jump-food">Food</a>
+      <a data-jump="jump-dinner">Dinner</a>
+      <a data-jump="jump-brunch">Brunch</a>
       <a data-jump="jump-cocktails">Cocktails</a>
       <a data-jump="jump-beer">Beer</a>
       <a data-jump="jump-wine">Wine</a>
@@ -211,26 +213,6 @@ footer b{color:var(--ink);}
   <footer id="foot"></footer>
 </div>
 
-<!-- Manager modal -->
-<div class="modal" id="mgrModal">
-  <div class="backdrop" id="mgrBackdrop"></div>
-  <div class="sheet">
-    <div class="mh">
-      <h3 id="mgrTitle">Set tonight’s “Push”</h3>
-      <p id="mgrSub">Tap the dishes to feature tonight. Saved on this device — the whole floor sees the same picks.</p>
-      <div class="seg">
-        <button id="segPush" class="on">★ Push tonight</button>
-        <button id="seg86">86 / Out</button>
-      </div>
-    </div>
-    <div class="mgr-list" id="mgrList"></div>
-    <div class="mf">
-      <span class="mcount" id="mgrCount"></span>
-      <button class="btn ghost" id="mgrClear">Clear all</button>
-      <button class="btn primary" id="mgrDone">Done</button>
-    </div>
-  </div>
-</div>
 
 <button class="toTop" id="toTop" aria-label="Back to top">↑ Top</button>
 
@@ -435,6 +417,64 @@ const MENU = [
     dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free"], spice:2,
     allergens:{contains:["Peanut"],removable:[]}, pour:"House of Brown Chardonnay" },
 
+  /* ---------- BRUNCH & PASTRIES ---------- */
+  { cat:"Pastries", name:"Cinnamon Roll", price:"8", desc:"Freshly baked cinnamon roll.",
+    points:["Brunch pastry."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Pastries", name:"Croissant · Regular", price:"7", desc:"Butter croissant, baked in-house.",
+    points:["Brunch pastry."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Pastries", name:"Croissant · Chocolate", price:"8", desc:"Chocolate butter croissant.",
+    points:["Brunch pastry."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Starters", name:"Puff Puffs", price:"9", desc:"Nigerian fried dough, cinnamon sugar, caramel, powdered sugar.",
+    points:["Brunch item."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Starters", name:"Biscuits", price:"8", desc:"Two fluffy biscuits.",
+    points:["Brunch item."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Dairy"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Jerk Steak & Eggs", price:"21", desc:"Jerk-marinated steak, caramelized onions, breakfast potatoes, green seasoning, one egg your way.",
+    points:["Brunch item."], dietary:["Gluten-Free"], spice:0, allergens:{contains:["Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"The OG Biscuit Sando", price:"17", desc:"Fried chicken, biscuit, creole gravy, one egg your way.",
+    points:["Brunch item."], dietary:[], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Channa Omelet", price:"14", desc:"Spinach, channa, green seasoning.",
+    points:["Brunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Callaloo Benedict", price:"14", desc:"Fluffy biscuits, coconut collards, poached eggs, crystals hollandaise.",
+    points:["Brunch item."], dietary:["Vegetarian","Pescatarian"], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Blue Crab & Grits", price:"23", desc:"Sea Island blue grits, butter, cream, blue crab, cherry tomato, dijon mustard sauce.",
+    points:["Brunch item."], dietary:["Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Dairy","Shellfish"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Dominican Breakfast Bowl", price:"15", desc:"Two eggs your way, queso fresco, Induveca salami, mashed plantain, pickled red onion.",
+    points:["Brunch item."], dietary:["Gluten-Free"], spice:0, allergens:{contains:["Egg","Dairy"],removable:[]}, pour:"" },
+  { cat:"Brunch · Savory", name:"Bacon, Egg & Croissant Sandwich", price:"17", desc:"With breakfast potatoes.",
+    points:["Brunch item."], dietary:[], spice:0, allergens:{contains:["Gluten","Dairy","Egg"],removable:[]}, pour:"" },
+  { cat:"Brunch · Sweet", name:"Lemon Pancakes", price:"14", desc:"Seasonal jam, candied citrus peel.",
+    points:["Brunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Egg","Dairy"],removable:[]}, pour:"" },
+  { cat:"Brunch · Sweet", name:"Coco Bread French Toast", price:"18", desc:"Coconut custard, maduros, rum maple, toasted coconut, lime, pecan crumble.",
+    points:["Brunch item."], dietary:["Vegetarian"], spice:0, allergens:{contains:["Gluten","Egg","Tree Nut"],removable:[]}, pour:"" },
+  { cat:"Brunch · Sweet", name:"Breakfast Porridge", price:"12", desc:"Coconut milk, seasonal fruit, honey, granola, toasted coconut.",
+    points:["Brunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Breakfast Potatoes", price:"6", desc:"",
+    points:["Brunch item."], dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free","Pescatarian"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Blue Grits", price:"8", desc:"",
+    points:["Brunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Dairy"],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Yuca Fries", price:"8", desc:"",
+    points:["Brunch item."], dietary:["Vegetarian","Vegan","Gluten-Free","Dairy-Free","Pescatarian"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Crispy Tofu", price:"7", desc:"",
+    points:["Brunch item."], dietary:["Vegetarian","Vegan","Dairy-Free","Pescatarian"], spice:0, allergens:{contains:["Soy"],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Bacon", price:"7", desc:"",
+    points:["Brunch item."], dietary:["Gluten-Free","Dairy-Free"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Chicken Sausage", price:"7", desc:"",
+    points:["Brunch item."], dietary:["Gluten-Free","Dairy-Free"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Spiced Pork Sausage", price:"8", desc:"",
+    points:["Brunch item."], dietary:["Gluten-Free","Dairy-Free"], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
+  { cat:"Brunch Sides", name:"Two Eggs", price:"5", desc:"",
+    points:["Brunch item."], dietary:["Vegetarian","Gluten-Free","Dairy-Free","Pescatarian"], spice:0, allergens:{contains:["Egg"],removable:[]}, pour:"" },
+  { cat:"Lunch", name:"Red Red Chilaquiles", price:"20", desc:"Salsa roja, black-eyed peas, queso fresco, pickled red onion, blue tortilla chips, crema. Add goat +5, add chicken +5.",
+    points:["Lunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Dairy"],removable:[]}, pour:"" },
+  { cat:"Lunch", name:"Butter Salad", price:"15", desc:"Butter lettuce, charred tomato, feta, buttermilk dressing, benne seeds. Add chicken +5, add shrimp +6.",
+    points:["Lunch item."], dietary:["Vegetarian","Gluten-Free","Pescatarian"], spice:0, allergens:{contains:["Dairy","Sesame"],removable:[]}, pour:"" },
+  { cat:"Lunch", name:"Avocado Toast", price:"20", desc:"Coco bread, one egg your way, avocado mousse, lime, roasted corn, pickled red onion, everything spice, herbs, charred tomato, crispy shallot.",
+    points:["Lunch item."], dietary:["Vegetarian","Pescatarian"], spice:0, allergens:{contains:["Gluten","Egg"],removable:[]}, pour:"" },
+  { cat:"Lunch", name:"Jerk Goat Sando", price:"17", desc:"Yuca fries, pikliz, green seasoning, jerk BBQ.",
+    points:["Lunch item."], dietary:[], spice:0, allergens:{contains:["Gluten"],removable:[]}, pour:"" },
+  { cat:"Lunch", name:"Okan Cubano", price:"17", desc:"Lamb merguez, ham, shredded pork, dijon, smoked gouda, pikliz.",
+    points:["Lunch item."], dietary:[], spice:0, allergens:{contains:["Gluten","Dairy"],removable:[]}, pour:"" },
+
   /* ---------- COCKTAILS (drinks — no allergen filter) ---------- */
   { cat:"Cocktails", drink:true, name:"Chef's Tea", price:"18", desc:"Monkey Shoulder Scotch, hibiscus tea, 99 Banana, lemon, lime, agave.",
     points:["House signature — Scotch with hibiscus and banana, tart and tropical.","Garnish: dried plantain."], dietary:[], spice:0, allergens:{contains:[],removable:[]}, pour:"" },
@@ -615,13 +655,13 @@ let pushSet=loadPush();
 function savePush(){
   try{ localStorage.setItem('okan_push',JSON.stringify([...pushSet])); localStorage.setItem('okan_push_ts',new Date().toString()); }catch(e){}
 }
-function isFeatured(item){ return pushSet.has(item.name); }
+function isFeatured(item){ return false; }
 
 /* ---- "86 / out of stock" selection (saved per device) ---- */
 function load86(){ try{ const raw=localStorage.getItem('okan_86'); if(raw) return new Set(JSON.parse(raw)); }catch(e){} return new Set(); }
 let eightySet=load86();
 function save86(){ try{ localStorage.setItem('okan_86',JSON.stringify([...eightySet])); localStorage.setItem('okan_86_ts',new Date().toString()); }catch(e){} }
-function is86(item){ return eightySet.has(item.name); }
+function is86(item){ return false; }
 
 /* chips */
 const allergenChips=document.getElementById('allergenChips');
@@ -632,10 +672,8 @@ DIETARY.forEach(d=>{const c=el('div','chip diet',d);c.dataset.diet=d;c.onclick=(
 function toggleDiet(d){ state.diet.has(d)?state.diet.delete(d):state.diet.add(d); syncQuick(); render(); }
 function syncQuick(){
   document.querySelectorAll('#dietChips .chip').forEach(c=>c.classList.toggle('on',state.diet.has(c.dataset.diet)));
-  document.getElementById('pushChip').classList.toggle('on',state.push);
   document.getElementById('cmpChip').classList.toggle('on',state.compare);
 }
-document.getElementById('pushChip').onclick=()=>{state.push=!state.push;syncQuick();render();};
 document.getElementById('cmpChip').onclick=()=>{state.compare=!state.compare;syncQuick();render();};
 
 const tool=document.getElementById('tool');
@@ -753,12 +791,6 @@ function wineMatchesSearch(w){
 
 function render(){
   const menu=document.getElementById('menu');menu.innerHTML="";
-  if(eightySet.size){
-    const n86=MENU.filter(m=>is86(m)).map(m=>m.name);
-    const board=el('div','board86');
-    board.innerHTML='<b>86’d tonight ('+n86.length+'):</b> '+n86.join(' · ');
-    menu.appendChild(board);
-  }
   const order={safe:0,mod:1,none:1,no:2};
   const foodFiltersActive = state.avoid.size||state.diet.size;
   let shown=0;
@@ -773,7 +805,9 @@ function render(){
   } else bar.classList.remove('show');
 
   const cats=[];MENU.forEach(m=>{if(!cats.includes(m.cat))cats.push(m.cat);});
-  let firstFood=true;
+  const BRUNCH=new Set(["Pastries","Brunch · Starters","Brunch · Savory","Brunch · Sweet","Brunch Sides","Lunch"]);
+  const DRINKCATS=new Set(["Cocktails","Draft Beer","Bottles and Cans"]);
+  let dinnerDone=false, brunchDone=false;
   cats.forEach(cat=>{
     const isDrink=MENU.find(m=>m.cat===cat)?.drink;
     let items=MENU.filter(m=>m.cat===cat&&matchesSearch(m)&&matchesDiet(m));
@@ -782,10 +816,17 @@ function render(){
     items=items.map(m=>({m,st:statusFor(m).kind})).filter(x=>!(state.hideUnsafe&&x.st==="no"));
     if(state.avoid.size) items.sort((a,b)=>order[a.st]-order[b.st]);
     if(!items.length) return;
+    // Group banners: Dinner vs Brunch
+    if(!DRINKCATS.has(cat)){
+      if(BRUNCH.has(cat)){
+        if(!brunchDone){ const g=el('div','group'); g.id='jump-brunch'; g.appendChild(el('div','grouph','Brunch')); menu.appendChild(g); brunchDone=true; }
+      } else {
+        if(!dinnerDone){ const g=el('div','group'); g.id='jump-dinner'; g.appendChild(el('div','grouph','Dinner')); menu.appendChild(g); dinnerDone=true; }
+      }
+    }
     const sec=el('div','cat');
     if(cat==="Cocktails") sec.id="jump-cocktails";
     else if(cat==="Draft Beer") sec.id="jump-beer";
-    else if(firstFood){ sec.id="jump-food"; firstFood=false; }
     const h=el('h2');h.appendChild(el('span',null,cat));
     if(cat==="Rice") h.appendChild(el('span','cnote','sides · no dedicated pour'));
     sec.appendChild(h);menu.appendChild(sec);
@@ -811,47 +852,7 @@ function render(){
   document.getElementById('count').textContent=shown+(state.push?' push item'+(shown===1?'':'s'):(foodFiltersActive?' matching':' ')+' item'+(shown===1?'':'s'));
 }
 
-/* ---- Manager modal (Push tonight + 86 / Out) ---- */
-const mgrModal=document.getElementById('mgrModal');
-let mgrMode='push';
-function activeSet(){ return mgrMode==='push'?pushSet:eightySet; }
-function activeSave(){ mgrMode==='push'?savePush():save86(); }
-function fmtTs(){
-  const key=mgrMode==='push'?'okan_push_ts':'okan_86_ts';
-  try{ const ts=localStorage.getItem(key); if(ts){ const d=new Date(ts); return ' · updated '+d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); } }catch(e){}
-  return '';
-}
-function updateMgrCount(){ document.getElementById('mgrCount').textContent = activeSet().size+(mgrMode==='push'?' featured':' 86’d')+fmtTs(); }
-function buildManager(){
-  const list=document.getElementById('mgrList'); list.innerHTML="";
-  const set=activeSet();
-  MENU.filter(m=>!m.drink).forEach(m=>{
-    const row=el('label','mgr-row'+(mgrMode==='86'?' m86':''));
-    const cb=el('input'); cb.type='checkbox'; cb.checked=set.has(m.name);
-    cb.onchange=()=>{ cb.checked?set.add(m.name):set.delete(m.name); activeSave(); updateMgrCount(); syncQuick(); render(); };
-    const meta=el('div','mgr-meta'); meta.appendChild(el('span','mgr-name',m.name)); meta.appendChild(el('span','mgr-cat',m.cat));
-    row.appendChild(cb); row.appendChild(meta); list.appendChild(row);
-  });
-  updateMgrCount();
-}
-function setMode(mode){
-  mgrMode=mode;
-  document.getElementById('segPush').classList.toggle('on',mode==='push');
-  document.getElementById('seg86').classList.toggle('on',mode==='86');
-  document.getElementById('mgrTitle').textContent = mode==='push' ? 'Set tonight’s “Push”' : 'Set 86 / Out of stock';
-  document.getElementById('mgrSub').textContent = mode==='push'
-    ? 'Tap the dishes to feature tonight. Saved on this device — the whole floor sees the same picks.'
-    : 'Tap the dishes that are 86’d / out. They’ll show flagged and dimmed for staff, with a running list up top.';
-  buildManager();
-}
-function openMgr(){ setMode(mgrMode); mgrModal.classList.add('show'); }
-function closeMgr(){ mgrModal.classList.remove('show'); }
-document.getElementById('managerBtn').onclick=openMgr;
-document.getElementById('mgrBackdrop').onclick=closeMgr;
-document.getElementById('mgrDone').onclick=closeMgr;
-document.getElementById('segPush').onclick=()=>setMode('push');
-document.getElementById('seg86').onclick=()=>setMode('86');
-document.getElementById('mgrClear').onclick=()=>{ activeSet().clear(); activeSave(); buildManager(); syncQuick(); render(); };
+
 
 document.getElementById('foot').innerHTML =
   "<b>Reminders for the floor:</b> Always confirm allergies with the kitchen — recipes and sourcing change. GF items are cooked in a dedicated fryer/prep area. "+
@@ -871,10 +872,24 @@ document.getElementById('jumpNav').addEventListener('click',e=>{
   const y=t.getBoundingClientRect().top + window.scrollY - off;
   window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
 });
+// Scroll-spy: highlight the nav pill for the section currently in view
+const NAVIDS=['jump-dinner','jump-brunch','jump-cocktails','jump-beer','jump-wine'];
+function updateActiveNav(){
+  const nav=document.getElementById('jumpNav'); if(!nav) return;
+  const hd=document.querySelector('header');
+  const cut=(hd?hd.getBoundingClientRect().bottom:0)+12;
+  const present=NAVIDS.filter(id=>document.getElementById(id));
+  let current=null;
+  present.forEach(id=>{ if(document.getElementById(id).getBoundingClientRect().top<=cut) current=id; });
+  if(!current && present.length) current=present[0];
+  if(present.length && (window.scrollY+window.innerHeight>=document.body.scrollHeight-2)) current=present[present.length-1];
+  nav.querySelectorAll('a[data-jump]').forEach(a=>a.classList.toggle('active', a.dataset.jump===current));
+}
 // Back-to-top button
 const toTop=document.getElementById('toTop');
 toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-window.addEventListener('scroll',()=>{ toTop.classList.toggle('show', window.scrollY>420); },{passive:true});
+window.addEventListener('scroll',()=>{ toTop.classList.toggle('show', window.scrollY>420); updateActiveNav(); },{passive:true});
+setTimeout(updateActiveNav,300);
 
 render();
 </script>
